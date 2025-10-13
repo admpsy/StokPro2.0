@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle de Movimentação</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4b6cb7;
+            --secondary-color: #182848;
+            --accent-color: #6a11cb;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #121212;
+            --dark-bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --text-color: #f8f9fa;
+            --text-muted: #b0b0b0;
+            --text-light: #ffffff;
+            --border-color: #444;
+            --sidebar-width: 280px;
+            --table-header-bg: #343a40;
+            --table-row-hover: rgba(255, 255, 255, 0.08);
+            --table-striped: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--dark-bg);
+            border-right: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: all 0.3s;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-light);
+            background-color: rgba(75, 108, 183, 0.2);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .nav-link i {
+            margin-right: 0.5rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+        }
+
+        .table {
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background-color: var(--table-header-bg);
+            border-color: var(--border-color);
+        }
+
+        .table td {
+            border-color: var(--border-color);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--table-row-hover);
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: var(--table-striped);
+        }
+
+        .form-control, .form-select {
+            background-color: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--dark-bg);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+            box-shadow: 0 0 0 0.25rem rgba(75, 108, 183, 0.25);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #3a5a9e;
+            border-color: #3a5a9e;
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .status-valid {
+            color: var(--success-color);
+        }
+
+        .status-warning {
+            color: var(--warning-color);
+        }
+
+        .status-expired {
+            color: var(--danger-color);
+        }
+
+        .badge-status-ativo {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .badge-status-liberado {
+            background-color: var(--success-color);
+        }
+
+        .badge-status-descartado {
+            background-color: var(--danger-color);
+        }
+
+        .photo-preview {
+            display: inline-block;
+            position: relative;
+            margin: 5px;
+        }
+
+        .photo-preview img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .photo-preview .remove-photo {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .sync-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .stat-card {
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(135deg, var(--success-color), #20c997);
+        }
+
+        .bg-gradient-warning {
+            background: linear-gradient(135deg, var(--warning-color), #fd7e14);
+        }
+
+        .bg-gradient-danger {
+            background: linear-gradient(135deg, var(--danger-color), #e83e8c);
+        }
+
+        .bg-gradient-info {
+            background: linear-gradient(135deg, var(--info-color), #6f42c1);
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar .nav-text {
+                display: none;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .sidebar-header h3 {
+                display: none;
+            }
+            
+            .sidebar-header .logo-icon {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar-nav {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-link {
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 4px solid transparent;
+            }
+            
+            .nav-link.active {
+                border-left: none;
+                border-bottom: 4px solid var(--primary-color);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="bi bi-box-seam logo-icon"></i> <span class="nav-text">Controle de Movimentação</span></h3>
+        </div>
+        <div class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-target="dashboard">
+                        <i class="bi bi-speedometer2"></i> <span class="nav-text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="movimentacao">
+                        <i class="bi bi-arrow-left-right"></i> <span class="nav-text">Movimentação</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="estoque">
+                        <i class="bi bi-boxes"></i> <span class="nav-text">Estoque</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="produtos-segregados">
+                        <i class="bi bi-shield-exclamation"></i> <span class="nav-text">Produtos Segregados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="paletes">
+                        <i class="bi bi-palette"></i> <span class="nav-text">Paletes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-target="relatorios">
+                        <i class="bi bi-file-earmark-text"></i> <span class="nav-text">Relatórios</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="p-3">
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm" id="syncButton">
+                    <i class="bi bi-cloud-arrow-up"></i> <span class="nav-text">Sincronizar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard -->
+        <div id="dashboard" class="module-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard</h2>
+                <div class="d-flex">
+                    <span class="badge bg-success me-2" id="syncStatus">Sincronizado</span>
+                    <span class="badge bg-secondary" id="currentDate"></span>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card bg-gradient-primary text-white">
+                        <div class="card-body">
+                            <div class="stat-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="stat-number" id="totalProdutos">0</div>
+                            <div class="stat-title">Total de Produtos</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card bg-gradient-success text-white">
+                        <div class="card-body">
+                            <div class="stat-icon">
+                                <i class="bi bi-arrow-down-circle"></i>
+                            </div>
+                            <div class="stat-number" id="entradasDia">0</div>
+                            <div class="stat-title">Entradas do Dia</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card bg-gradient-warning text-white">
+                        <div class="card-body">
+                            <div class="stat-icon">
+                                <i class="bi bi-arrow-up-circle"></i>
+                            </div>
+                            <div class="stat-number" id="saidasDia">0</div>
+                            <div class="stat-title">Saídas do Dia</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card stat-card bg-gradient-danger text-white">
+                        <div class="card-body">
+                            <div class="stat-icon">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-number" id="alertasAtivos">0</div>
+                            <div class="stat-title">Alertas Ativos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Movimentações Recentes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Produto</th>
+                                            <th>Tipo</th>
+                                            <th>Quantidade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentMovementsTable">
+                                        <!-- Dados serão preenchidos via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Status de Produtos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Lote</th>
+                                            <th>Status</th>
+                                            <th>Vencimento</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productStatusTable">
+                                        <!-- Dados serão preenchidos via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Produtos com Vencimento Próximo ou Vencidos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Lote</th>
+                                            <th>Quantidade</th>
+                                            <th>Fabricacao</th>
+                                            <th>Vencimento</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="expiringProductsTable">
+                                        <!-- Dados serão preenchidos via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movimentação -->
+        <div id="movimentacao" class="module-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Cadastro de Movimentação</h2>
+                <button class="btn btn-primary" id="generateReportBtn">
+                    <i class="bi bi-file-earmark-pdf"></i> Gerar Relatório
+                </button>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Formulário de Movimentação</h5>
+                </div>
+                <div class="card-body">
+                    <form id="movementForm">
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="movementDate" class="form-label">Data</label>
+                                <input type="date" class="form-control" id="movementDate" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="movementType" class="form-label">Tipo de Movimento</label>
+                                <select class="form-select" id="movementType" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Entrada">Entrada</option>
+                                    <option value="Saída">Saída</option>
+                                    <option value="Devolução">Devolução</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="productSearch" class="form-label">Produto</label>
+                                <input type="text" class="form-control" id="productSearch" placeholder="Digite para buscar produto..." list="productList">
+                                <datalist id="productList">
+                                    <!-- Opções serão preenchidas via JavaScript -->
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="productSKU" class="form-label">SKU</label>
+                                <input type="text" class="form-control" id="productSKU" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="productName" class="form-label">Nome do Produto</label>
+                                <input type="text" class="form-control" id="productName" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="productType" class="form-label">Tipo</label>
+                                <input type="text" class="form-control" id="productType" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="availableQuantity" class="form-label">Disponível</label>
+                                <input type="text" class="form-control" id="availableQuantity" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <label for="batch" class="form-label">Lote</label>
+                                <select class="form-select" id="batch" required>
+                                    <option value="">Selecione...</option>
+                                    <!-- Opções serão preenchidas via JavaScript -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="manufacturingDate" class="form-label">Data de Fabricação</label>
+                                <input type="date" class="form-control" id="manufacturingDate" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="quantity" class="form-label">Quantidade</label>
+                                <input type="number" class="form-control" id="quantity" min="1" required>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="button" class="btn btn-primary w-100" id="addItemBtn">
+                                    <i class="bi bi-plus-circle"></i> Adicionar Item
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="photos" class="form-label">Fotos (opcional)</label>
+                                <input type="file" class="form-control" id="photos" multiple accept="image/*">
+                                <div class="form-text">Selecione até 5 fotos (JPEG, PNG)</div>
+                                <div id="photoPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Itens Adicionados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Lote</th>
+                                    <th>Quantidade</th>
+                                    <th>Tipo Mov.</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="itemsTable">
+                                <!-- Itens serão adicionados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <strong>Total de Itens: <span id="totalItems">0</span></strong>
+                        </div>
+                        <div>
+                            <button class="btn btn-success" id="saveMovementBtn">
+                                <i class="bi bi-check-circle"></i> Salvar Movimentação
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estoque -->
+        <div id="estoque" class="module-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Estoque de Produtos</h2>
+                <div class="d-flex">
+                    <input type="text" class="form-control me-2" id="searchStock" placeholder="Buscar por SKU ou nome...">
+                    <button class="btn btn-outline-primary" id="filterStockBtn">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Produtos em Estoque</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>SKU</th>
+                                    <th>Produto</th>
+                                    <th>Tipo</th>
+                                    <th>Quantidade Total</th>
+                                    <th>Lotes</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTable">
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produtos Segregados -->
+        <div id="produtos-segregados" class="module-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Produtos Segregados</h2>
+                <button class="btn btn-primary" id="newSegregatedBtn">
+                    <i class="bi bi-plus-circle"></i> Novo Produto Segregado
+                </button>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="filterStatus" class="form-label">Status</label>
+                            <select class="form-select" id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="ativo">Ativo</option>
+                                <option value="liberado">Liberado</option>
+                                <option value="descartado">Descartado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterReason" class="form-label">Motivo</label>
+                            <select class="form-select" id="filterReason">
+                                <option value="">Todos</option>
+                                <option value="qualidade">Controle de Qualidade</option>
+                                <option value="quarentena">Quarentena</option>
+                                <option value="nao-conformidade">Não Conformidade</option>
+                                <option value="retorno-cliente">Retorno de Cliente</option>
+                                <option value="analise-tecnica">Análise Técnica</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterResponsible" class="form-label">Responsável</label>
+                            <input type="text" class="form-control" id="filterResponsible" placeholder="Nome do responsável">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="filterDate" class="form-label">Data Início</label>
+                            <input type="date" class="form-control" id="filterDate">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <button class="btn btn-primary" id="applyFiltersBtn">Aplicar Filtros</button>
+                            <button class="btn btn-outline-secondary" id="clearFiltersBtn">Limpar Filtros</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Lista de Produtos Segregados</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>SKU</th>
+                                    <th>Produto</th>
+                                    <th>Lote</th>
+                                    <th>Quantidade</th>
+                                    <th>Motivo</th>
+                                    <th>Localização</th>
+                                    <th>Responsável</th>
+                                    <th>Data Início</th>
+                                    <th>Previsão</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="segregatedTable">
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paletes -->
+        <div id="paletes" class="module-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Movimentação de Paletes</h2>
+                <button class="btn btn-primary" id="newPaleteBtn">
+                    <i class="bi bi-plus-circle"></i> Nova Movimentação
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Relatórios de Paletes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="paletesAccordion">
+                        <!-- Relatórios serão adicionados via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relatórios -->
+        <div id="relatorios" class="module-content d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Relatórios de Estoque</h2>
+                <div class="d-flex">
+                    <input type="date" class="form-control me-2" id="reportDateFilter">
+                    <button class="btn btn-outline-primary me-2" id="filterReportsBtn">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <button class="btn btn-primary" id="exportReportsBtn">
+                        <i class="bi bi-file-earmark-excel"></i> Exportar
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Histórico de Relatórios</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nº Relatório</th>
+                                    <th>Data</th>
+                                    <th>Itens</th>
+                                    <th>Tipo</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTable">
+                                <!-- Dados serão preenchidos via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Produtos Segregados -->
+    <div class="modal fade" id="segregatedModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="segregatedModalTitle">Novo Produto Segregado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="segregatedForm">
+                        <input type="hidden" id="segregatedId">
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="segregatedSKU" class="form-label">SKU</label>
+                                <input type="text" class="form-control" id="segregatedSKU" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="segregatedProduct" class="form-label">Produto</label>
+                                <input type="text" class="form-control" id="segregatedProduct" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="segregatedType" class="form-label">Tipo</label>
+                                <select class="form-select" id="segregatedType" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Tambor">Tambor</option>
+                                    <option value="Balde">Balde</option>
+                                    <option value="Bombona">Bombona</option>
+                                    <option value="IBC1000L">IBC 1000L</option>
+                                    <option value="Caixa">Caixa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="segregatedQuantity" class="form-label">Quantidade</label>
+                                <input type="number" class="form-control" id="segregatedQuantity" min="1" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="segregatedBatch" class="form-label">Lote</label>
+                                <input type="text" class="form-control" id="segregatedBatch" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="segregatedManufacturingDate" class="form-label">Data de Fabricação</label>
+                                <input type="date" class="form-control" id="segregatedManufacturingDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="segregatedReason" class="form-label">Motivo da Segregação</label>
+                                <select class="form-select" id="segregatedReason" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="qualidade">Controle de Qualidade</option>
+                                    <option value="quarentena">Quarentena</option>
+                                    <option value="nao-conformidade">Não Conformidade</option>
+                                    <option value="retorno-cliente">Retorno de Cliente</option>
+                                    <option value="analise-tecnica">Análise Técnica</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3" id="otherReasonContainer" style="display: none;">
+                            <div class="col-12">
+                                <label for="segregatedOtherReason" class="form-label">Especificar Outro Motivo</label>
+                                <input type="text" class="form-control" id="segregatedOtherReason">
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="segregatedLocation" class="form-label">Localização</label>
+                                <input type="text" class="form-control" id="segregatedLocation" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="segregatedResponsible" class="form-label">Responsável</label>
+                                <input type="text" class="form-control" id="segregatedResponsible" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="segregatedStartDate" class="form-label">Data de Início</label>
+                                <input type="date" class="form-control" id="segregatedStartDate" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="segregatedExpectedDate" class="form-label">Previsão de Liberação</label>
+                                <input type="date" class="form-control" id="segregatedExpectedDate">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="segregatedStatus" class="form-label">Status</label>
+                                <select class="form-select" id="segregatedStatus" required>
+                                    <option value="ativo">Ativo</option>
+                                    <option value="liberado">Liberado</option>
+                                    <option value="descartado">Descartado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="segregatedObservations" class="form-label">Observações</label>
+                                <textarea class="form-control" id="segregatedObservations" rows="3" maxlength="500"></textarea>
+                                <div class="form-text"><span id="charCount">0</span>/500 caracteres</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label for="segregatedPhotos" class="form-label">Fotos</label>
+                                <input type="file" class="form-control" id="segregatedPhotos" multiple accept="image/*">
+                                <div class="form-text">Mínimo 1 foto, máximo 5</div>
+                                <div id="segregatedPhotoPreview" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveSegregatedBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Paletes -->
+    <div class="modal fade" id="paleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paleteModalTitle">Nova Movimentação de Palete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="paleteForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="paleteDate" class="form-label">Data</label>
+                                <input type="date" class="form-control" id="paleteDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="paleteType" class="form-label">Tipo de Palete</label>
+                                <select class="form-select" id="paleteType" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Fracionado">Fracionado</option>
+                                    <option value="Tambor">Tambor</option>
+                                    <option value="IBC 1000L">IBC 1000L</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="paleteMovement" class="form-label">Tipo de Movimento</label>
+                                <select class="form-select" id="paleteMovement" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="Entrada">Entrada</option>
+                                    <option value="Saída">Saída</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="paleteQuantity" class="form-label">Quantidade</label>
+                                <input type="number" class="form-control" id="paleteQuantity" min="1" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="savePaleteBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status de Sincronização -->
+    <div class="sync-status">
+        <div class="toast" id="syncToast">
+            <div class="toast-header">
+                <strong class="me-auto">Status de Sincronização</strong>
+                <small>Agora</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="syncToastBody">
+                Sincronizado com sucesso!
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Módulos do Sistema -->
+    <script src="modules/dashboard.js"></script>
+    <script src="modules/movimentacao.js"></script>
+    <script src="modules/estoque.js"></script>
+    <script src="modules/produtos-segregados.js"></script>
+    <script src="modules/paletes.js"></script>
+    <script src="modules/relatorios.js"></script>
+    
+    <!-- Script Principal -->
+    <script>
+        // Inicialização do sistema
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar data atual
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('currentDate').textContent = formatDate(today);
+            document.getElementById('movementDate').value = today;
+            document.getElementById('segregatedStartDate').value = today;
+            document.getElementById('paleteDate').value = today;
+            
+            // Inicializar módulos
+            initializeDashboard();
+            initializeMovimentacao();
+            initializeEstoque();
+            initializeProdutosSegregados();
+            initializePaletes();
+            initializeRelatorios();
+            
+            // Configurar navegação
+            setupNavigation();
+            
+            // Configurar sincronização
+            setupSync();
+            
+            // Carregar dados iniciais
+            loadInitialData();
+        });
+
+        // Configuração de navegação
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const moduleContents = document.querySelectorAll('.module-content');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remover classe active de todos os links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Adicionar classe active ao link clicado
+                    this.classList.add('active');
+                    
+                    // Ocultar todos os módulos
+                    moduleContents.forEach(content => content.classList.add('d-none'));
+                    
+                    // Mostrar o módulo correspondente
+                    const target = this.getAttribute('data-target');
+                    document.getElementById(target).classList.remove('d-none');
+                });
+            });
+        }
+
+        // Configuração de sincronização
+        function setupSync() {
+            const syncButton = document.getElementById('syncButton');
+            const syncToast = new bootstrap.Toast(document.getElementById('syncToast'));
+            
+            syncButton.addEventListener('click', function() {
+                syncButton.disabled = true;
+                syncButton.innerHTML = '<i class="bi bi-arrow-repeat spinner"></i> <span class="nav-text">Sincronizando...</span>';
+                
+                // Simular sincronização
+                setTimeout(() => {
+                    syncButton.disabled = false;
+                    syncButton.innerHTML = '<i class="bi bi-cloud-arrow-up"></i> <span class="nav-text">Sincronizar</span>';
+                    
+                    document.getElementById('syncToastBody').textContent = 'Dados sincronizados com sucesso!';
+                    syncToast.show();
+                    
+                    document.getElementById('syncStatus').textContent = 'Sincronizado';
+                    document.getElementById('syncStatus').className = 'badge bg-success me-2';
+                }, 2000);
+            });
+        }
+
+        // Carregar dados iniciais
+        function loadInitialData() {
+            // Carregar dados do localStorage ou inicializar com dados de exemplo
+            if (!localStorage.getItem('productsData')) {
+                initializeSampleData();
+            }
+            
+            // Atualizar dashboard
+            updateDashboard();
+            
+            // Atualizar estoque
+            updateStockTable();
+            
+            // Atualizar produtos segregados
+            updateSegregatedTable();
+            
+            // Atualizar relatórios
+            updateReportsTable();
+        }
+
+        // Inicializar dados de exemplo
+        function initializeSampleData() {
+            const sampleProducts = [
+                {
+                    SKU: "PROD001",
+                    Produto: "Resina Epóxi",
+                    Tipo: "Tambor",
+                    Quantidade: 150,
+                    Lote: "LOTE001",
+                    "Data Fabricação": "2023-01-15",
+                    Entradas: 200,
+                    Saídas: 50,
+                    id: 1
+                },
+                {
+                    SKU: "PROD002",
+                    Produto: "Adesivo Industrial",
+                    Tipo: "Balde",
+                    Quantidade: 75,
+                    Lote: "LOTE002",
+                    "Data Fabricação": "2023-02-20",
+                    Entradas: 100,
+                    Saídas: 25,
+                    id: 2
+                },
+                {
+                    SKU: "PROD003",
+                    Produto: "Solvente Limpeza",
+                    Tipo: "Bombona",
+                    Quantidade: 200,
+                    Lote: "LOTE003",
+                    "Data Fabricação": "2023-03-10",
+                    Entradas: 250,
+                    Saídas: 50,
+                    id: 3
+                }
+            ];
+            
+            const sampleMovements = [
+                {
+                    id: 1,
+                    timestamp: new Date().toISOString(),
+                    date: new Date().toISOString().split('T')[0],
+                    movementType: "Entrada",
+                    productSKU: "PROD001",
+                    productName: "Resina Epóxi",
+                    quantity: 50,
+                    productType: "Tambor",
+                    batch: "LOTE001",
+                    manufacturingDate: "2023-01-15",
+                    quantidadeProcessada: 50,
+                    remainingQuantity: 0,
+                    lotesUtilizados: []
+                }
+            ];
+            
+            const sampleReports = [
+                {
+                    reportNumber: 1,
+                    date: new Date().toISOString().split('T')[0],
+                    timestamp: new Date().toISOString(),
+                    items: sampleMovements
+                }
+            ];
+            
+            localStorage.setItem('productsData', JSON.stringify(sampleProducts));
+            localStorage.setItem('movementHistory', JSON.stringify(sampleMovements));
+            localStorage.setItem('reportsHistory', JSON.stringify(sampleReports));
+            localStorage.setItem('lastReportNumber', '1');
+            localStorage.setItem('lastPaletesReportNumber', '1');
+            localStorage.setItem('segregatedProducts', JSON.stringify([]));
+            localStorage.setItem('paletesData', JSON.stringify([]));
+        }
+
+        // Funções utilitárias
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function calcularVencimento(dataFabricacao) {
+            const data = new Date(dataFabricacao);
+            data.setFullYear(data.getFullYear() + 4);
+            return data.toISOString().split('T')[0];
+        }
+
+        function verificarStatusProduto(dataVencimento) {
+            const hoje = new Date();
+            const vencimento = new Date(dataVencimento);
+            const umAnoAntes = new Date(vencimento);
+            umAnoAntes.setFullYear(umAnoAntes.getFullYear() - 1);
+            
+            if (hoje > vencimento) {
+                return { status: "Vencido", class: "status-expired" };
+            } else if (hoje > umAnoAntes) {
+                return { status: "Vencimento Próximo", class: "status-warning" };
+            } else {
+                return { status: "Dentro do Prazo", class: "status-valid" };
+            }
+        }
+
+        // Exportar funções para uso em outros módulos
+        window.utils = {
+            formatDate,
+            calcularVencimento,
+            verificarStatusProduto
+        };
+    </script>
+</body>
+</html>
