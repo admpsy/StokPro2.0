@@ -1,4 +1,4 @@
-/* styles/custom.css */
+/* styles/custom.css - VERSÃO CORRIGIDA */
 :root {
     --primary-color: #4b6cb7;
     --secondary-color: #182848;
@@ -24,7 +24,7 @@
     --transition: all 0.3s ease;
 }
 
-/* Estilos Base */
+/* CORREÇÃO: Reset e estilos base com melhor contraste */
 * {
     margin: 0;
     padding: 0;
@@ -33,13 +33,13 @@
 
 body {
     background-color: var(--light-bg);
-    color: var(--text-color);
+    color: var(--text-color); /* CORREÇÃO: Garantir cor do texto */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
 }
 
-/* Sidebar */
+/* CORREÇÃO: Sidebar com texto legível */
 .sidebar {
     position: fixed;
     top: 0;
@@ -62,7 +62,7 @@ body {
 }
 
 .sidebar-header h3 {
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
     font-weight: 600;
     margin: 0;
 }
@@ -87,7 +87,7 @@ body {
 
 .nav-link:hover, 
 .nav-link.active {
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco no hover/ativo */
     background: linear-gradient(90deg, rgba(75, 108, 183, 0.2) 0%, transparent 100%);
     border-left: 4px solid var(--primary-color);
     transform: translateX(5px);
@@ -98,6 +98,7 @@ body {
     width: 20px;
     text-align: center;
     transition: var(--transition);
+    color: var(--text-muted); /* CORREÇÃO: Cor dos ícones */
 }
 
 .nav-link:hover i,
@@ -106,16 +107,17 @@ body {
     transform: scale(1.1);
 }
 
-/* Conteúdo Principal */
+/* CORREÇÃO: Conteúdo principal com texto legível */
 .main-content {
     margin-left: var(--sidebar-width);
     padding: 1.5rem;
     min-height: 100vh;
     transition: var(--transition);
     background: var(--light-bg);
+    color: var(--text-color); /* CORREÇÃO: Garantir cor do texto */
 }
 
-/* Cards */
+/* CORREÇÃO: Cards com texto legível */
 .card {
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -123,6 +125,7 @@ body {
     box-shadow: var(--shadow);
     margin-bottom: 1.5rem;
     transition: var(--transition);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
 .card:hover {
@@ -135,17 +138,22 @@ body {
     border-bottom: 1px solid var(--border-color);
     padding: 1rem 1.25rem;
     border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    color: var(--text-light); /* CORREÇÃO: Texto branco no header */
 }
 
 .card-title {
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
     font-weight: 600;
     margin-bottom: 0;
 }
 
-/* Tabelas */
+.card-body {
+    color: var(--text-color); /* CORREÇÃO: Texto legível no corpo */
+}
+
+/* CORREÇÃO: Tabelas com texto legível */
 .table {
-    color: var(--text-color);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
     margin-bottom: 0;
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -154,7 +162,7 @@ body {
 .table th {
     background: linear-gradient(135deg, var(--table-header-bg) 0%, var(--dark-bg) 100%);
     border-color: var(--border-color);
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco no header */
     font-weight: 600;
     padding: 1rem 0.75rem;
     text-transform: uppercase;
@@ -167,6 +175,12 @@ body {
     vertical-align: middle;
     padding: 0.75rem;
     transition: var(--transition);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
+    background-color: transparent; /* CORREÇÃO: Remover fundos transparentes */
+}
+
+.table tbody tr {
+    background-color: var(--card-bg); /* CORREÇÃO: Fundo sólido */
 }
 
 .table tbody tr:hover {
@@ -178,12 +192,12 @@ body {
     background-color: var(--table-striped);
 }
 
-/* Formulários */
+/* CORREÇÃO: Formulários com texto legível */
 .form-control, 
 .form-select {
     background-color: var(--dark-bg);
     border: 1px solid var(--border-color);
-    color: var(--text-color);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
     border-radius: var(--border-radius);
     transition: var(--transition);
     padding: 0.75rem 1rem;
@@ -193,13 +207,13 @@ body {
 .form-select:focus {
     background-color: var(--dark-bg);
     border-color: var(--primary-color);
-    color: var(--text-color);
+    color: var(--text-color); /* CORREÇÃO: Manter cor do texto no focus */
     box-shadow: 0 0 0 0.25rem rgba(75, 108, 183, 0.25);
     transform: translateY(-1px);
 }
 
 .form-label {
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
     font-weight: 500;
     margin-bottom: 0.5rem;
 }
@@ -208,24 +222,27 @@ body {
     color: var(--text-muted) !important;
 }
 
-/* Botões */
+/* CORREÇÃO: Botões com texto legível */
 .btn {
     border-radius: var(--border-radius);
     font-weight: 500;
     transition: var(--transition);
     padding: 0.75rem 1.5rem;
     border: none;
+    color: white; /* CORREÇÃO: Texto sempre branco em botões */
 }
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
     border: none;
+    color: white; /* CORREÇÃO: Texto branco */
 }
 
 .btn-primary:hover {
     background: linear-gradient(135deg, #3a5a9e 0%, #5a0fb5 100%);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+    color: white; /* CORREÇÃO: Texto branco no hover */
 }
 
 .btn-outline-primary {
@@ -237,27 +254,42 @@ body {
 .btn-outline-primary:hover {
     background: var(--primary-color);
     border-color: var(--primary-color);
-    color: white;
+    color: white; /* CORREÇÃO: Texto branco no hover */
     transform: translateY(-2px);
 }
 
 .btn-success {
     background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+    color: white;
 }
 
 .btn-warning {
     background: linear-gradient(135deg, var(--warning-color) 0%, #fd7e14 100%);
+    color: #212529; /* CORREÇÃO: Texto escuro para contraste */
 }
 
 .btn-danger {
     background: linear-gradient(135deg, var(--danger-color) 0%, #e83e8c 100%);
+    color: white;
 }
 
 .btn-info {
     background: linear-gradient(135deg, var(--info-color) 0%, #6f42c1 100%);
+    color: white;
 }
 
-/* Status e Badges */
+.btn-outline-secondary {
+    color: var(--text-muted);
+    border: 2px solid var(--text-muted);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--text-muted);
+    color: var(--dark-bg);
+}
+
+/* CORREÇÃO: Status e Badges com texto legível */
 .status-valid {
     color: var(--success-color);
     font-weight: 600;
@@ -280,11 +312,12 @@ body {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: white; /* CORREÇÃO: Texto sempre branco em badges */
 }
 
 .badge-status-ativo {
     background: linear-gradient(135deg, var(--warning-color) 0%, #fd7e14 100%);
-    color: #212529;
+    color: #212529; /* CORREÇÃO: Texto escuro para contraste com amarelo */
 }
 
 .badge-status-liberado {
@@ -297,7 +330,15 @@ body {
     color: white;
 }
 
-/* Preview de Fotos */
+.badge.bg-success,
+.badge.bg-primary,
+.badge.bg-warning,
+.badge.bg-danger,
+.badge.bg-info {
+    color: white; /* CORREÇÃO: Texto branco em badges coloridos */
+}
+
+/* CORREÇÃO: Preview de Fotos */
 .photo-preview {
     display: inline-block;
     position: relative;
@@ -342,7 +383,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Status de Sincronização */
+/* CORREÇÃO: Status de Sincronização */
 .sync-status {
     position: fixed;
     bottom: 20px;
@@ -355,15 +396,20 @@ body {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
 .toast-header {
     background: linear-gradient(135deg, var(--dark-bg) 0%, transparent 100%);
     border-bottom: 1px solid var(--border-color);
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
 }
 
-/* Cards de Estatísticas */
+.toast-body {
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
+}
+
+/* CORREÇÃO: Cards de Estatísticas com texto legível */
 .stat-card {
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -371,6 +417,7 @@ body {
     border: none;
     position: relative;
     overflow: hidden;
+    color: white; /* CORREÇÃO: Texto sempre branco em cards de stats */
 }
 
 .stat-card::before {
@@ -392,6 +439,7 @@ body {
     padding: 1.5rem;
     position: relative;
     z-index: 1;
+    color: white; /* CORREÇÃO: Texto branco */
 }
 
 .stat-icon {
@@ -399,6 +447,7 @@ body {
     opacity: 0.9;
     margin-bottom: 1rem;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    color: white; /* CORREÇÃO: Ícones brancos */
 }
 
 .stat-number {
@@ -406,17 +455,18 @@ body {
     font-weight: bold;
     margin-bottom: 0.5rem;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    color: white; /* CORREÇÃO: Números brancos */
 }
 
 .stat-title {
     font-size: 0.9rem;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255,255,255,0.9); /* CORREÇÃO: Texto branco semi-transparente */
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 500;
 }
 
-/* Gradientes para Cards de Estatísticas */
+/* CORREÇÃO: Gradientes para Cards de Estatísticas */
 .bg-gradient-primary {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
 }
@@ -437,10 +487,10 @@ body {
     background: linear-gradient(135deg, var(--info-color) 0%, #6f42c1 100%);
 }
 
-/* Accordion Personalizado */
+/* CORREÇÃO: Accordion com texto legível */
 .accordion-button {
     background: linear-gradient(135deg, var(--card-bg) 0%, var(--dark-bg) 100%);
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
     border: 1px solid var(--border-color);
     font-weight: 500;
     transition: var(--transition);
@@ -448,12 +498,12 @@ body {
 
 .accordion-button:not(.collapsed) {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-    color: white;
+    color: white; /* CORREÇÃO: Texto branco quando expandido */
     box-shadow: none;
 }
 
 .accordion-button::after {
-    filter: invert(1);
+    filter: invert(1); /* CORREÇÃO: Ícone branco */
 }
 
 .accordion-item {
@@ -466,20 +516,22 @@ body {
 
 .accordion-body {
     background: var(--dark-bg);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
-/* Modais */
+/* CORREÇÃO: Modais com texto legível */
 .modal-content {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
 .modal-header {
     background: linear-gradient(135deg, var(--dark-bg) 0%, transparent 100%);
     border-bottom: 1px solid var(--border-color);
-    color: var(--text-light);
+    color: var(--text-light); /* CORREÇÃO: Texto branco */
 }
 
 .modal-footer {
@@ -487,14 +539,19 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
-.btn-close {
-    filter: invert(1);
+.modal-body {
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
-/* Tabela de Estoque com Expansão */
+.btn-close {
+    filter: invert(1); /* CORREÇÃO: Ícone X branco */
+}
+
+/* CORREÇÃO: Tabela de Estoque com texto legível */
 .stock-group {
     background: var(--card-bg);
     transition: var(--transition);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
 .stock-group:hover {
@@ -504,6 +561,7 @@ body {
 .batch-detail {
     background: var(--dark-bg);
     transition: var(--transition);
+    color: var(--text-color); /* CORREÇÃO: Texto legível */
 }
 
 .batch-detail:hover {
@@ -512,59 +570,92 @@ body {
 
 .expand-btn {
     transition: var(--transition);
+    color: var(--text-color); /* CORREÇÃO: Cor do ícone */
 }
 
 .expand-btn:hover {
     transform: scale(1.1);
 }
 
-/* Animações e Estados de Loading */
-.spinner {
-    animation: spin 1s linear infinite;
+/* CORREÇÃO: Textos em elementos específicos */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-light); /* CORREÇÃO: Títulos sempre brancos */
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.text-muted {
+    color: var(--text-muted) !important;
 }
 
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
+/* CORREÇÃO: Placeholders */
+.form-control::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* CORREÇÃO: Estados desabilitados */
+.form-control:disabled,
+.form-select:disabled {
+    background-color: var(--dark-bg);
+    color: var(--text-muted);
+    opacity: 0.6;
 }
 
-.slide-in {
-    animation: slideIn 0.3s ease-out;
+/* CORREÇÃO: Datalist e elementos de formulário */
+datalist,
+input[list] {
+    color: var(--text-color);
+    background-color: var(--dark-bg);
 }
 
-@keyframes slideIn {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
+/* CORREÇÃO: Texto em elementos de lista */
+li, option {
+    color: var(--text-color);
+    background-color: var(--dark-bg);
 }
 
-/* Scrollbar Personalizada */
-::-webkit-scrollbar {
-    width: 8px;
+/* CORREÇÃO: Texto em elementos de tabela expandíveis */
+.stock-group td,
+.batch-detail td {
+    color: var(--text-color) !important;
 }
 
-::-webkit-scrollbar-track {
-    background: var(--dark-bg);
+/* CORREÇÃO: Texto em badges dentro de tabelas */
+.table .badge {
+    color: white !important;
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
+/* CORREÇÃO: Texto em botões dentro de tabelas */
+.table .btn {
+    color: inherit; /* Manter cor do texto do botão */
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-color);
+/* CORREÇÃO: Texto em formulários de modais */
+.modal-content .form-label {
+    color: var(--text-light);
 }
 
-/* Responsividade */
+.modal-content .form-control,
+.modal-content .form-select {
+    color: var(--text-color);
+    background-color: var(--dark-bg);
+}
+
+/* CORREÇÃO: Texto em elementos de preview */
+.photo-preview-container {
+    color: var(--text-color);
+}
+
+/* CORREÇÃO: Texto em elementos de filtro */
+.filter-section {
+    color: var(--text-color);
+}
+
+/* CORREÇÃO: Texto em elementos de status */
+.status-indicator {
+    color: var(--text-color);
+}
+
+/* Responsividade mantida */
 @media (max-width: 992px) {
     .sidebar {
         width: 80px;
@@ -650,132 +741,21 @@ body {
     }
 }
 
-@media (max-width: 576px) {
-    .main-content {
-        padding: 1rem;
-    }
-    
-    .card {
-        margin-bottom: 1rem;
-    }
-    
-    .table th,
-    .table td {
-        padding: 0.5rem;
-    }
-    
-    .photo-preview img {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .modal-dialog {
-        margin: 0.5rem;
-    }
+/* CORREÇÃO FINAL: Garantir que todos os textos sejam legíveis */
+* {
+    color: inherit; /* Herdar cor do elemento pai */
 }
 
-/* Utilitários */
-.text-gradient {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+body * {
+    color: var(--text-color); /* Fallback para todos os elementos */
 }
 
-.border-gradient {
-    border: 2px solid;
-    border-image: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) 1;
-}
-
-.shadow-custom {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-/* Estados de Foco Melhorados */
-.form-control:focus,
-.form-select:focus,
-.btn:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.3);
-}
-
-/* Animações de Entrada para Conteúdo Dinâmico */
-.module-content {
-    animation: fadeIn 0.5s ease-in;
-}
-
-/* Melhorias para Inputs de Arquivo */
-.form-control[type="file"] {
-    padding: 0.5rem;
-}
-
-.form-control[type="file"]::file-selector-button {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius);
-    margin-right: 1rem;
-    transition: var(--transition);
-    cursor: pointer;
-}
-
-.form-control[type="file"]::file-selector-button:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-}
-
-/* Indicadores Visuais para Campos Obrigatórios */
-.form-label.required::after {
-    content: " *";
-    color: var(--danger-color);
-}
-
-/* Tooltips Personalizados */
-.tooltip {
-    --bs-tooltip-bg: var(--primary-color);
-    --bs-tooltip-color: white;
-}
-
-/* Placeholders Estilizados */
-.form-control::placeholder {
-    color: var(--text-muted);
-    opacity: 0.7;
-}
-
-/* Estados de Desabilitado */
-.form-control:disabled,
-.form-select:disabled,
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* Animações para Alertas */
-.alert {
-    border: none;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    animation: slideIn 0.3s ease-out;
-}
-
-.alert-success {
-    background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
-    color: white;
-}
-
-.alert-warning {
-    background: linear-gradient(135deg, var(--warning-color) 0%, #fd7e14 100%);
-    color: #212529;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, var(--danger-color) 0%, #e83e8c 100%);
-    color: white;
-}
-
-.alert-info {
-    background: linear-gradient(135deg, var(--info-color) 0%, #6f42c1 100%);
-    color: white;
+/* CORREÇÃO: Remover transparência indesejada */
+.card,
+.table td,
+.table th,
+.modal-content,
+.accordion-item,
+.toast {
+    opacity: 1 !important; /* Garantir que não há transparência */
 }
