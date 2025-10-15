@@ -1145,10 +1145,21 @@
                                 <h5 class="mb-0">Produtos com Vencimento Próximo</h5>
                             </div>
                             <div class="card-body p-0">
-                                <div class="expiring-products-list" id="expiring-products-list">
-                                    <div class="text-center p-3 text-muted">
-                                        Nenhum produto com vencimento próximo
-                                    </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>SKU</th>
+                                                <th>Lote</th>
+                                                <th>Data de Vencimento</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="expiring-products-table">
+                                            <tr>
+                                                <td colspan="3" class="text-center">Nenhum produto com vencimento próximo</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -1208,6 +1219,9 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="text-gradient">Cadastro de Movimentação</h2>
                     <div>
+                        <button id="save-movement-btn" class="btn btn-success me-2">
+                            <i class="bi bi-check-circle me-1"></i>Salvar
+                        </button>
                         <button id="generate-pdf" class="btn btn-primary">
                             <i class="bi bi-file-earmark-pdf me-1"></i>Gerar PDF
                         </button>
@@ -1298,9 +1312,6 @@
                             </table>
                         </div>
                         <div class="mt-3">
-                            <button id="save-movement" class="btn btn-success me-2">
-                                <i class="bi bi-check-circle me-1"></i>Salvar e Gerar PDF
-                            </button>
                             <button id="clear-movement" class="btn btn-outline-secondary">
                                 <i class="bi bi-x-circle me-1"></i>Limpar Tudo
                             </button>
@@ -1684,6 +1695,10 @@
                                 <label for="segregation-date" class="form-label">Data *</label>
                                 <input type="date" class="form-control" id="segregation-date" required>
                             </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="segregation-quantity" class="form-label">Quantidade *</label>
+                                <input type="number" class="form-control" id="segregation-quantity" min="1" required>
+                            </div>
                             <div class="col-12 mb-3">
                                 <label for="segregation-notes" class="form-label">Observações</label>
                                 <textarea class="form-control" id="segregation-notes" rows="3" placeholder="Observações adicionais..."></textarea>
@@ -1725,6 +1740,10 @@
                         <div class="col-md-6 mb-3">
                             <strong>Data:</strong>
                             <p id="view-date" class="mb-2"></p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <strong>Quantidade:</strong>
+                            <p id="view-quantity" class="mb-2"></p>
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>Status:</strong>
@@ -1779,6 +1798,39 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="save-new-batch">Salvar Lote</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Lote -->
+    <div class="modal fade" id="editBatchModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Lote</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-batch-form">
+                        <input type="hidden" id="edit-batch-id">
+                        <div class="mb-3">
+                            <label for="edit-batch-number" class="form-label">Número do Lote *</label>
+                            <input type="text" class="form-control" id="edit-batch-number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-batch-quantity" class="form-label">Quantidade *</label>
+                            <input type="number" class="form-control" id="edit-batch-quantity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-batch-manufacturing-date" class="form-label">Data de Fabricação *</label>
+                            <input type="date" class="form-control" id="edit-batch-manufacturing-date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-edit-batch">Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -2065,7 +2117,8 @@
                         reason: 'Qualidade',
                         date: new Date().toISOString().split('T')[0],
                         status: 'Ativo',
-                        notes: 'Problema identificado na inspeção de qualidade'
+                        notes: 'Problema identificado na inspeção de qualidade',
+                        quantity: 10
                     }
                 ];
                 localStorage.setItem('segregatedProducts', JSON.stringify(segregatedProducts));
@@ -2095,7 +2148,7 @@
             document.getElementById('input-product')?.addEventListener('change', updateLotesOnProductChange);
             document.getElementById('input-movementType')?.addEventListener('change', updateLotesOnProductChange);
             document.getElementById('add-to-table')?.addEventListener('click', addItemToTable);
-            document.getElementById('save-movement')?.addEventListener('click', saveMovementAndGeneratePDF);
+            document.getElementById('save-movement-btn')?.addEventListener('click', saveMovement);
             document.getElementById('clear-movement')?.addEventListener('click', clearMovement);
             document.getElementById('generate-pdf')?.addEventListener('click', generateMovementPDF);
             
@@ -2130,6 +2183,9 @@
 
             // Adicionar Lote
             document.getElementById('save-new-batch')?.addEventListener('click', addNewBatch);
+            
+            // Editar Lote
+            document.getElementById('save-edit-batch')?.addEventListener('click', saveEditBatch);
         }
 
         // ========== FUNÇÕES DOS BOTÕES ==========
@@ -2167,6 +2223,7 @@
             updateRecentMovements();
             updatePaletesMovements();
             updateProductStatus();
+            updateExpiringProductsTable();
         }
 
         function updateRecentMovements() {
@@ -2340,37 +2397,35 @@
             document.getElementById('count-valid').textContent = validCount;
             document.getElementById('count-warning').textContent = warningCount;
             document.getElementById('count-expired').textContent = expiredCount;
-            
-            // Produtos com vencimento próximo
-            const expiringList = document.getElementById('expiring-products-list');
-            expiringList.innerHTML = '';
+        }
+
+        // NOVA FUNÇÃO: Atualizar tabela de produtos com vencimento próximo
+        function updateExpiringProductsTable() {
+            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+            const tbody = document.getElementById('expiring-products-table');
+            tbody.innerHTML = '';
             
             const expiringProducts = productsData.filter(p => {
                 const status = getProductStatus(p['Data Fabricação']);
                 return status === 'Vencimento Próximo' || status === 'Vencido';
-            }).slice(0, 5);
+            }).slice(0, 10); // Limitar a 10 produtos
             
             if (expiringProducts.length === 0) {
-                expiringList.innerHTML = '<div class="text-center p-3 text-muted">Nenhum produto com vencimento próximo</div>';
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhum produto com vencimento próximo</td></tr>';
                 return;
             }
             
+            let counter = 1;
             expiringProducts.forEach(product => {
-                const status = getProductStatus(product['Data Fabricação']);
-                const statusClass = status === 'Vencido' ? 'status-expired' : 'status-warning';
-                
-                const item = document.createElement('div');
-                item.className = 'p-3 border-bottom border-secondary';
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${product.Produto}</strong>
-                            <div class="text-muted small">${product.SKU} - ${product.Lote}</div>
-                        </div>
-                        <span class="${statusClass}">${status}</span>
-                    </div>
+                const expiryDate = getExpiryDate(product['Data Fabricação']);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${counter}. ${product.SKU}</td>
+                    <td>${counter}. ${product.Lote}</td>
+                    <td>${formatDate(expiryDate)}</td>
                 `;
-                expiringList.appendChild(item);
+                tbody.appendChild(row);
+                counter++;
             });
         }
 
@@ -2793,7 +2848,8 @@
             });
         }
 
-        function saveMovementAndGeneratePDF() {
+        // NOVA FUNÇÃO: Salvar movimentação separadamente
+        function saveMovement() {
             if (movementItems.length === 0) {
                 alert('Adicione pelo menos um item antes de salvar!');
                 return;
@@ -2827,10 +2883,7 @@
             // Atualizar estoque
             updateStockFromMovement();
             
-            alert('Movimentação salva com sucesso! Gerando PDF...');
-            
-            // Gerar PDF automaticamente
-            generateMovementPDF();
+            alert('Movimentação salva com sucesso!');
             
             clearMovement();
             updateDashboard();
@@ -3299,21 +3352,47 @@
             updateDashboard();
         }
 
+        // NOVA FUNÇÃO: Editar lote
         function editBatch(id) {
             const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
             const product = productsData.find(p => p.id === id);
             
             if (product) {
-                document.getElementById('productModalTitle').textContent = 'Editar Lote';
-                document.getElementById('edit-product-id').value = product.id;
-                document.getElementById('product-sku').value = product.SKU;
-                document.getElementById('product-name').value = product.Produto;
-                document.getElementById('product-type').value = product.Tipo;
-                document.getElementById('product-quantity').value = product.Quantidade;
-                document.getElementById('product-batch').value = product.Lote;
-                document.getElementById('product-manufacturing-date').value = product['Data Fabricação'];
+                document.getElementById('edit-batch-id').value = product.id;
+                document.getElementById('edit-batch-number').value = product.Lote;
+                document.getElementById('edit-batch-quantity').value = product.Quantidade;
+                document.getElementById('edit-batch-manufacturing-date').value = product['Data Fabricação'];
                 
-                new bootstrap.Modal(document.getElementById('productModal')).show();
+                new bootstrap.Modal(document.getElementById('editBatchModal')).show();
+            }
+        }
+
+        // NOVA FUNÇÃO: Salvar edição do lote
+        function saveEditBatch() {
+            const id = document.getElementById('edit-batch-id').value;
+            const batchNumber = document.getElementById('edit-batch-number').value;
+            const quantity = document.getElementById('edit-batch-quantity').value;
+            const manufacturingDate = document.getElementById('edit-batch-manufacturing-date').value;
+            
+            if (!batchNumber || !quantity || !manufacturingDate) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+            const productIndex = productsData.findIndex(p => p.id == id);
+            
+            if (productIndex !== -1) {
+                productsData[productIndex].Lote = batchNumber;
+                productsData[productIndex].Quantidade = parseInt(quantity);
+                productsData[productIndex]['Data Fabricação'] = manufacturingDate;
+                
+                localStorage.setItem('productsData', JSON.stringify(productsData));
+                
+                alert('Lote atualizado com sucesso!');
+                bootstrap.Modal.getInstance(document.getElementById('editBatchModal')).hide();
+                loadProductsData();
+                updateDashboard();
             }
         }
 
@@ -3404,13 +3483,26 @@
                         </div>
                     </div>
                     <div class="report-details" style="display: none;">
-                        ${report.items.map(item => `
-                            <div class="report-item">
-                                <span>${item.type}</span>
-                                <span>${item.movement}</span>
-                                <span>${item.quantity} unidades</span>
-                            </div>
-                        `).join('')}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Palete</th>
+                                        <th>Tipo de Movimento</th>
+                                        <th>Quantidade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${report.items.map(item => `
+                                        <tr>
+                                            <td>${item.type}</td>
+                                            <td>${item.movement}</td>
+                                            <td>${item.quantity}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 `;
                 container.appendChild(reportElement);
@@ -3712,6 +3804,7 @@
                 document.getElementById('view-batch').textContent = segregation.batch;
                 document.getElementById('view-reason').textContent = segregation.reason;
                 document.getElementById('view-date').textContent = formatDate(segregation.date);
+                document.getElementById('view-quantity').textContent = segregation.quantity || 'N/A';
                 document.getElementById('view-status').textContent = segregation.status;
                 document.getElementById('view-notes').textContent = segregation.notes || 'Nenhuma observação';
                 
@@ -3754,6 +3847,8 @@
             document.getElementById('add-segregation-form').reset();
             // Definir data atual
             document.getElementById('segregation-date').value = new Date().toISOString().split('T')[0];
+            // Definir quantidade padrão
+            document.getElementById('segregation-quantity').value = '1';
             // Carregar produtos
             loadProductsForSegregation();
             // Mostrar modal
@@ -3804,9 +3899,10 @@
             const lote = document.getElementById('segregation-lote').value;
             const reason = document.getElementById('segregation-reason').value;
             const date = document.getElementById('segregation-date').value;
+            const quantity = document.getElementById('segregation-quantity').value;
             const notes = document.getElementById('segregation-notes').value;
             
-            if (!product || !lote || !reason || !date) {
+            if (!product || !lote || !reason || !date || !quantity) {
                 alert('Preencha todos os campos obrigatórios!');
                 return;
             }
@@ -3828,6 +3924,7 @@
                 batch: lote,
                 reason: reason,
                 date: date,
+                quantity: parseInt(quantity),
                 status: 'Ativo',
                 notes: notes,
                 timestamp: new Date().toISOString()
