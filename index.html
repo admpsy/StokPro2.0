@@ -1984,126 +1984,124 @@
             }
         }
 
-        // ========== INICIALIZAÇÃO DE DADOS ==========
-        function initializeData() {
-            // Produtos
-            if (!localStorage.getItem('productsData')) {
-                const productsData = [
-                    { 
-                        SKU: "45277855", 
-                        Produto: "SPIRAX S2 G 90 FR. 20LT.", 
-                        Tipo: "Tambor", 
-                        Quantidade: 2,
-                        Lote: "329848",
-                        'Data Fabricação': "2022-08-30",
-                        Entradas: 2,
-                        Saídas: 0,
-                        id: 1
-                    },
-                    { 
-                        SKU: "44227860", 
-                        Produto: "RIMULA RS LE 10W40 AP CK 4 FR 20L", 
-                        Tipo: "Tambor", 
-                        Quantidade: 7,
-                        Lote: "12015568",
-                        'Data Fabricação': "2022-09-02",
-                        Entradas: 7,
-                        Saídas: 0,
-                        id: 2
-                    },
-                    { 
-                        SKU: "45880860", 
-                        Produto: "REFRIGERATION OIL S4 FR-F 100 BALDE", 
-                        Tipo: "Balde", 
-                        Quantidade: 24,
-                        Lote: "5012200299",
-                        'Data Fabricação': "2022-10-05",
-                        Entradas: 24,
-                        Saídas: 0,
-                        id: 3
-                    }
-                ];
-                localStorage.setItem('productsData', JSON.stringify(productsData));
+// ========== INICIALIZAÇÃO DE DADOS ==========
+function initializeData() {
+    // Produtos
+    if (!localStorage.getItem('productsData')) {
+        const productsData = [
+            { 
+                SKU: "45277855", 
+                Produto: "SPIRAX S2 G 90 FR. 20LT.", 
+                Tipo: "Tambor", 
+                Quantidade: 2,
+                Lote: "329848",
+                'Data Fabricação': "2022-08-30",
+                Entradas: 2,
+                Saídas: 0,
+                id: 1
+            },
+            { 
+                SKU: "44227860", 
+                Produto: "RIMULA RS LE 10W40 AP CK 4 FR 20L", 
+                Tipo: "Tambor", 
+                Quantidade: 7,
+                Lote: "12015568",
+                'Data Fabricação': "2022-09-02",
+                Entradas: 7,
+                Saídas: 0,
+                id: 2
+            },
+            { 
+                SKU: "45880860", 
+                Produto: "REFRIGERATION OIL S4 FR-F 100 BALDE", 
+                Tipo: "Balde", 
+                Quantidade: 24,
+                Lote: "5012200299",
+                'Data Fabricação': "2022-10-05",
+                Entradas: 24,
+                Saídas: 0,
+                id: 3
             }
-            
-            // Histórico de movimentações
-            if (!localStorage.getItem('movementHistory')) {
-                const today = new Date().toISOString().split('T')[0];
-                const movementHistory = [
+        ];
+        localStorage.setItem('productsData', JSON.stringify(productsData));
+    }
+    
+    // Histórico de movimentações
+    if (!localStorage.getItem('movementHistory')) {
+        const today = getCurrentDate(); // USANDO A NOVA FUNÇÃO
+        const movementHistory = [
+            {
+                id: 1,
+                timestamp: new Date().toISOString(),
+                date: today,
+                movementType: 'Entrada',
+                productSKU: '45277855',
+                productName: 'SPIRAX S2 G 90 FR. 20LT.',
+                quantity: 2,
+                productType: 'Tambor',
+                batch: '329848',
+                manufacturingDate: '2022-08-30'
+            }
+        ];
+        localStorage.setItem('movementHistory', JSON.stringify(movementHistory));
+    }
+    
+    // Relatórios de estoque
+    if (!localStorage.getItem('reportsHistory')) {
+        const today = getCurrentDate(); // USANDO A NOVA FUNÇÃO
+        const reportsHistory = [
+            {
+                reportNumber: 1,
+                date: today,
+                timestamp: new Date().toISOString(),
+                items: [
                     {
-                        id: 1,
-                        timestamp: new Date().toISOString(),
                         date: today,
                         movementType: 'Entrada',
-                        productSKU: '45277855',
                         productName: 'SPIRAX S2 G 90 FR. 20LT.',
                         quantity: 2,
                         productType: 'Tambor',
                         batch: '329848',
                         manufacturingDate: '2022-08-30'
                     }
-                ];
-                localStorage.setItem('movementHistory', JSON.stringify(movementHistory));
+                ]
             }
-            
-            // Relatórios de estoque
-            if (!localStorage.getItem('reportsHistory')) {
-                const today = new Date().toISOString().split('T')[0];
-                const reportsHistory = [
-                    {
-                        reportNumber: 1,
-                        date: today,
-                        timestamp: new Date().toISOString(),
-                        items: [
-                            {
-                                date: today,
-                                movementType: 'Entrada',
-                                productName: 'SPIRAX S2 G 90 FR. 20LT.',
-                                quantity: 2,
-                                productType: 'Tambor',
-                                batch: '329848',
-                                manufacturingDate: '2022-08-30'
-                            }
-                        ]
-                    }
-                ];
-                localStorage.setItem('reportsHistory', JSON.stringify(reportsHistory));
+        ];
+        localStorage.setItem('reportsHistory', JSON.stringify(reportsHistory));
+    }
+    
+    // Movimentação de paletes
+    if (!localStorage.getItem('paletesData')) {
+        const paletesData = [
+            {
+                id: 1,
+                date: "2025-10-14", // Data fixa no formato correto
+                reportNumber: 8,
+                items: [
+                    { type: 'Tambor', movement: 'Saída', quantity: 8 },
+                    { type: 'Fracionado', movement: 'Entrada', quantity: 6 },
+                    { type: 'Tambor', movement: 'Entrada', quantity: 12 },
+                    { type: 'IBC 1000L', movement: 'Entrada', quantity: 48 }
+                ]
             }
-            
-            // Movimentação de paletes
-            if (!localStorage.getItem('paletesData')) {
-                const today = new Date().toISOString().split('T')[0];
-                const paletesData = [
-                    {
-                        id: 1,
-                        date: "2025-10-14",
-                        reportNumber: 8,
-                        items: [
-                            { type: 'Tambor', movement: 'Saída', quantity: 8 },
-                            { type: 'Fracionado', movement: 'Entrada', quantity: 6 },
-                            { type: 'Tambor', movement: 'Entrada', quantity: 12 },
-                            { type: 'IBC 1000L', movement: 'Entrada', quantity: 48 }
-                        ]
-                    }
-                ];
-                localStorage.setItem('paletesData', JSON.stringify(paletesData));
-            }
+        ];
+        localStorage.setItem('paletesData', JSON.stringify(paletesData));
+    }
 
-            // Produtos segregados
-            if (!localStorage.getItem('segregatedProducts')) {
-                const segregatedProducts = [];
-                localStorage.setItem('segregatedProducts', JSON.stringify(segregatedProducts));
-            }
+    // Produtos segregados
+    if (!localStorage.getItem('segregatedProducts')) {
+        const segregatedProducts = [];
+        localStorage.setItem('segregatedProducts', JSON.stringify(segregatedProducts));
+    }
 
-            // Números de relatório
-            if (!localStorage.getItem('lastReportNumber')) {
-                localStorage.setItem('lastReportNumber', '1');
-            }
-            if (!localStorage.getItem('lastPaletesReportNumber')) {
-                localStorage.setItem('lastPaletesReportNumber', '8');
-            }
-        }
-
+    // Números de relatório
+    if (!localStorage.getItem('lastReportNumber')) {
+        localStorage.setItem('lastReportNumber', '1');
+    }
+    if (!localStorage.getItem('lastPaletesReportNumber')) {
+        localStorage.setItem('lastPaletesReportNumber', '8');
+    }
+}
         // ========== CONFIGURAÇÃO DE EVENTOS DOS BOTÕES ==========
         function setupEventListeners() {
             // Dashboard
@@ -2826,50 +2824,59 @@
             });
         }
 
-        // NOVA FUNÇÃO: Salvar e Gerar PDF (combina as duas funcionalidades)
-        function saveAndGeneratePDF() {
-            if (movementItems.length === 0) {
-                alert('Adicione pelo menos um item antes de salvar!');
-                return;
-            }
-            
-            // Salvar a movimentação
-            const movementHistory = JSON.parse(localStorage.getItem('movementHistory') || '[]');
-            const newId = movementHistory.length > 0 ? Math.max(...movementHistory.map(m => m.id)) + 1 : 1;
-            
-            movementItems.forEach(item => {
-                movementHistory.push({
-                    id: newId,
-                    timestamp: new Date().toISOString(),
-                    date: item.date,
-                    movementType: item.movementType,
-                    productSKU: item.productSKU,
-                    productName: item.productName,
-                    quantity: item.quantity,
-                    productType: item.productType,
-                    batch: item.batch,
-                    manufacturingDate: new Date().toISOString().split('T')[0],
-                    photos: uploadedPhotos.map(photo => ({
-                        name: photo.name,
-                        dataUrl: photo.dataUrl
-                    }))
-                });
-            });
-            
-            localStorage.setItem('movementHistory', JSON.stringify(movementHistory));
-            
-            // Atualizar estoque
-            updateStockFromMovement();
-            
-            // Gerar PDF imediatamente após salvar
-            generateMovementPDF();
-            
-            alert('Movimentação salva e PDF gerado com sucesso!');
-            
-            // Limpar o formulário
-            clearMovement();
-            updateDashboard();
-        }
+      // NOVA FUNÇÃO: Salvar e Gerar PDF (combina as duas funcionalidades)
+function saveAndGeneratePDF() {
+    if (movementItems.length === 0) {
+        alert('Adicione pelo menos um item antes de salvar!');
+        return;
+    }
+    
+    // Obter a data do formulário e garantir o formato correto
+    const rawDate = document.getElementById('input-date').value;
+    const formattedDate = formatDateForStorage(rawDate);
+    
+    if (!formattedDate) {
+        alert('Data inválida!');
+        return;
+    }
+    
+    // Salvar a movimentação
+    const movementHistory = JSON.parse(localStorage.getItem('movementHistory') || '[]');
+    const newId = movementHistory.length > 0 ? Math.max(...movementHistory.map(m => m.id)) + 1 : 1;
+    
+    movementItems.forEach(item => {
+        movementHistory.push({
+            id: newId,
+            timestamp: new Date().toISOString(),
+            date: formattedDate, // USANDO A DATA FORMATADA CORRETAMENTE
+            movementType: item.movementType,
+            productSKU: item.productSKU,
+            productName: item.productName,
+            quantity: item.quantity,
+            productType: item.productType,
+            batch: item.batch,
+            manufacturingDate: getCurrentDate(), // USANDO A NOVA FUNÇÃO
+            photos: uploadedPhotos.map(photo => ({
+                name: photo.name,
+                dataUrl: photo.dataUrl
+            }))
+        });
+    });
+    
+    localStorage.setItem('movementHistory', JSON.stringify(movementHistory));
+    
+    // Atualizar estoque
+    updateStockFromMovement();
+    
+    // Gerar PDF imediatamente após salvar
+    generateMovementPDF();
+    
+    alert('Movimentação salva e PDF gerado com sucesso!');
+    
+    // Limpar o formulário
+    clearMovement();
+    updateDashboard();
+}
 
         function updateStockFromMovement() {
             const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
@@ -3575,48 +3582,49 @@
         }
 
         function addPaletesItem() {
-            const date = document.getElementById('paletes-date').value;
-            const type = document.getElementById('paletes-type').value;
-            const movement = document.getElementById('paletes-movement').value;
-            const quantity = document.getElementById('paletes-quantity').value;
-            
-            if (!date || !type || !movement || !quantity) {
-                alert('Preencha todos os campos!');
-                return;
-            }
-            
-            // Adicionar movimentação de paletes
-            const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
-            
-            // Verificar se já existe relatório para esta data
-            let existingReport = paletesData.find(report => report.date === date);
-            
-            if (!existingReport) {
-                const newReportNumber = paletesData.length > 0 ? Math.max(...paletesData.map(p => p.reportNumber)) + 1 : 1;
-                existingReport = {
-                    id: paletesData.length > 0 ? Math.max(...paletesData.map(p => p.id)) + 1 : 1,
-                    date: date,
-                    reportNumber: newReportNumber,
-                    items: []
-                };
-                paletesData.push(existingReport);
-            }
-            
-            // Adicionar item ao relatório
-            existingReport.items.push({
-                type: type,
-                movement: movement,
-                quantity: parseInt(quantity)
-            });
-            
-            localStorage.setItem('paletesData', JSON.stringify(paletesData));
-            
-            alert('Movimentação de paletes adicionada com sucesso!');
-            document.getElementById('paletes-form').reset();
-            document.getElementById('paletes-date').value = new Date().toISOString().split('T')[0];
-            loadPaletesData();
-            updateDashboard();
-        }
+    const rawDate = document.getElementById('paletes-date').value;
+    const date = formatDateForStorage(rawDate); // FORMATA A DATA CORRETAMENTE
+    const type = document.getElementById('paletes-type').value;
+    const movement = document.getElementById('paletes-movement').value;
+    const quantity = document.getElementById('paletes-quantity').value;
+    
+    if (!date || !type || !movement || !quantity) {
+        alert('Preencha todos os campos!');
+        return;
+    }
+    
+    // Adicionar movimentação de paletes
+    const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
+    
+    // Verificar se já existe relatório para esta data
+    let existingReport = paletesData.find(report => report.date === date);
+    
+    if (!existingReport) {
+        const newReportNumber = paletesData.length > 0 ? Math.max(...paletesData.map(p => p.reportNumber)) + 1 : 1;
+        existingReport = {
+            id: paletesData.length > 0 ? Math.max(...paletesData.map(p => p.id)) + 1 : 1,
+            date: date, // DATA JÁ FORMATADA
+            reportNumber: newReportNumber,
+            items: []
+        };
+        paletesData.push(existingReport);
+    }
+    
+    // Adicionar item ao relatório
+    existingReport.items.push({
+        type: type,
+        movement: movement,
+        quantity: parseInt(quantity)
+    });
+    
+    localStorage.setItem('paletesData', JSON.stringify(paletesData));
+    
+    alert('Movimentação de paletes adicionada com sucesso!');
+    document.getElementById('paletes-form').reset();
+    document.getElementById('paletes-date').value = getCurrentDate(); // USANDO A NOVA FUNÇÃO
+    loadPaletesData();
+    updateDashboard();
+}
 
         function generatePaletesPDF() {
             const { jsPDF } = window.jspdf;
@@ -4023,72 +4031,96 @@
         }
 
         // ========== FUNÇÕES UTILITÁRIAS ==========
-        function getProductType(sku) {
-            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
-            const product = productsData.find(p => p.SKU === sku);
-            return product ? product.Tipo : 'N/A';
-        }
+function getProductType(sku) {
+    const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+    const product = productsData.find(p => p.SKU === sku);
+    return product ? product.Tipo : 'N/A';
+}
 
-        function updateSyncStatus(isOnline, message) {
-            const indicator = document.getElementById('sync-status-indicator');
-            const text = document.getElementById('sync-status-text');
-            const configIndicator = document.getElementById('config-sync-status-indicator');
-            const configText = document.getElementById('config-sync-status-text');
-            
-            if (isOnline) {
-                indicator.className = 'sync-indicator sync-online';
-                text.textContent = message;
-                if (configIndicator) {
-                    configIndicator.className = 'sync-indicator sync-online';
-                    configText.textContent = `Status: ${message}`;
-                }
-            } else {
-                indicator.className = 'sync-indicator sync-offline';
-                text.textContent = message;
-                if (configIndicator) {
-                    configIndicator.className = 'sync-indicator sync-offline';
-                    configText.textContent = `Status: ${message}`;
-                }
-            }
-        }
+// FUNÇÃO CORRIGIDA: Formatar data considerando o fuso horário local
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    
+    // Se a data já estiver no formato brasileiro, retorna como está
+    if (dateString.includes('/')) {
+        return dateString;
+    }
+    
+    // Para datas no formato ISO (YYYY-MM-DD) ou outras, converte corretamente
+    const date = new Date(dateString);
+    
+    // Ajusta para o fuso horário local
+    const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    
+    return adjustedDate.toLocaleDateString('pt-BR');
+}
 
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-BR');
-        }
+// NOVA FUNÇÃO: Obter data atual no formato YYYY-MM-DD sem problemas de timezone
+function getCurrentDate() {
+    const now = new Date();
+    // Usa métodos locais para evitar problemas de timezone
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
 
-        // ========== INICIALIZAÇÃO ==========
-        document.addEventListener('DOMContentLoaded', function() {
-            // Configurar data atual
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR');
-            
-            // Configurar datas padrão
-            document.getElementById('input-date').value = today;
-            document.getElementById('paletes-date').value = today;
-            document.getElementById('stock-filter-date').value = today;
-            document.getElementById('paletes-filter-date').value = today;
-            
-            // Configurar navegação
-            setupNavigation();
-            
-            // Inicializar dados
-            initializeData();
-            
-            // Configurar eventos dos botões
-            setupEventListeners();
-            
-            // Carregar dados iniciais
-            loadProductsForMovement();
-            loadProductsData();
-            loadStockReport();
-            loadPaletesData();
-            loadSegregatedProducts();
-            updateDashboard();
-            
-            console.log("Sistema inicializado com sucesso!");
-        });
+// NOVA FUNÇÃO: Converter data para formato de armazenamento (YYYY-MM-DD)
+function formatDateForStorage(dateString) {
+    if (!dateString) return '';
+    
+    // Se já estiver no formato YYYY-MM-DD, retorna como está
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        return dateString;
+    }
+    
+    // Converte de DD/MM/YYYY para YYYY-MM-DD
+    if (dateString.includes('/')) {
+        const parts = dateString.split('/');
+        if (parts.length === 3) {
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+    }
+    
+    // Para outros formatos, usa o método padrão
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// ========== INICIALIZAÇÃO ==========
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar data atual CORRETAMENTE
+    const today = getCurrentDate();
+    document.getElementById('current-date').textContent = formatDate(today);
+    
+    // Configurar datas padrão
+    document.getElementById('input-date').value = today;
+    document.getElementById('paletes-date').value = today;
+    document.getElementById('stock-filter-date').value = today;
+    document.getElementById('paletes-filter-date').value = today;
+    
+    // Configurar navegação
+    setupNavigation();
+    
+    // Inicializar dados
+    initializeData();
+    
+    // Configurar eventos dos botões
+    setupEventListeners();
+    
+    // Carregar dados iniciais
+    loadProductsForMovement();
+    loadProductsData();
+    loadStockReport();
+    loadPaletesData();
+    loadSegregatedProducts();
+    updateDashboard();
+    
+    console.log("Sistema inicializado com sucesso!");
+});
     </script>
 </body>
 </html>
