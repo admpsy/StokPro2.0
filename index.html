@@ -4052,11 +4052,23 @@
             }
         }
 
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-BR');
-        }
+       function formatDate(dateString) {
+    // Verifica se a string de data existe e está no formato esperado (YYYY-MM-DD)
+    if (!dateString || !dateString.includes('-')) {
+        return 'Data inválida';
+    }
+
+    // 1. Divide a string "YYYY-MM-DD" em um array ["YYYY", "MM", "DD"]
+    const parts = dateString.split('-');
+    
+    // 2. Pega as partes da data
+    const year = parts[0];
+    const month = parts[1];
+    const day = parts[2];
+
+    // 3. Retorna a data formatada como "DD/MM/YYYY"
+    return `${day}/${month}/${year}`;
+}
 
         // ========== INICIALIZAÇÃO ==========
         document.addEventListener('DOMContentLoaded', function() {
