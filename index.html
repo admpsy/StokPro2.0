@@ -473,11 +473,6 @@
             border: 2px solid var(--border-color);
         }
         
-        .timeline-date {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-        
         .timeline-content {
             background-color: rgba(255, 255, 255, 0.05);
             padding: 10px 15px;
@@ -2838,22 +2833,7 @@
                 return;
             }
             
-            // Primeiro salva a movimentação
-            saveMovement();
-            
-            // Depois gera o PDF
-            setTimeout(() => {
-                generateMovementPDF();
-            }, 500);
-        }
-
-        function saveMovement() {
-            if (movementItems.length === 0) {
-                alert('Adicione pelo menos um item antes de salvar!');
-                return;
-            }
-            
-            // Salvar no histórico de movimentações
+            // Salvar a movimentação
             const movementHistory = JSON.parse(localStorage.getItem('movementHistory') || '[]');
             const newId = movementHistory.length > 0 ? Math.max(...movementHistory.map(m => m.id)) + 1 : 1;
             
@@ -2881,8 +2861,12 @@
             // Atualizar estoque
             updateStockFromMovement();
             
-            alert('Movimentação salva com sucesso!');
+            // Gerar PDF imediatamente após salvar
+            generateMovementPDF();
             
+            alert('Movimentação salva e PDF gerado com sucesso!');
+            
+            // Limpar o formulário
             clearMovement();
             updateDashboard();
         }
@@ -3445,7 +3429,7 @@
             XLSX.writeFile(wb, 'estoque_produtos.xlsx');
         }
 
-        // Movimentação de Paletes - MODIFICADA PARA O FORMATO DA IMAGEM
+        // Movimentação de Paletes - MODIFICADA PARA REMOVER EXCLUIR E MANTER APENAS EDITAR
         function loadPaletesData() {
             const filterDate = document.getElementById('paletes-filter-date').value;
             const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
@@ -3483,11 +3467,8 @@
                     <div class="report-header">
                         <span>Relatório Diário - ${formatDate(report.date)} - Nº ${String(report.reportNumber).padStart(6, '0')}</span>
                         <div>
-                            <button class="btn btn-sm btn-warning me-1 edit-report" data-id="${report.id}">
-                                <i class="bi bi-pencil"></i> Editar
-                            </button>
-                            <button class="btn btn-sm btn-danger me-1 delete-report" data-id="${report.id}">
-                                <i class="bi bi-trash"></i> Excluir
+                            <button class="btn btn-sm btn-warning edit-report" data-id="${report.id}">
+                                <i class="bi bi-pencil"></i>
                             </button>
                             <i class="bi bi-chevron-down"></i>
                         </div>
@@ -3518,8 +3499,8 @@
                 const icon = reportElement.querySelector('.bi-chevron-down');
                 
                 header.addEventListener('click', (e) => {
-                    // Não expandir/recolher se clicar nos botões de ação
-                    if (!e.target.closest('.edit-report') && !e.target.closest('.delete-report')) {
+                    // Não expandir/recolher se clicar no botão de editar
+                    if (!e.target.closest('.edit-report')) {
                         const isVisible = details.style.display !== 'none';
                         details.style.display = isVisible ? 'none' : 'block';
                         icon.className = isVisible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
@@ -3531,13 +3512,6 @@
                 editBtn.addEventListener('click', function() {
                     const id = parseInt(this.getAttribute('data-id'));
                     editPaletesReport(id);
-                });
-                
-                // Adicionar evento para o botão de excluir
-                const deleteBtn = reportElement.querySelector('.delete-report');
-                deleteBtn.addEventListener('click', function() {
-                    const id = parseInt(this.getAttribute('data-id'));
-                    deletePaletesReport(id);
                 });
             });
         }
@@ -3592,17 +3566,6 @@
                 bootstrap.Modal.getInstance(document.getElementById('editPaletesModal')).hide();
                 loadPaletesData();
                 updateDashboard();
-            }
-        }
-
-        function deletePaletesReport(id) {
-            if (confirm('Tem certeza que deseja excluir este relatório?')) {
-                let paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
-                paletesData = paletesData.filter(r => r.id !== id);
-                localStorage.setItem('paletesData', JSON.stringify(paletesData));
-                loadPaletesData();
-                updateDashboard();
-                alert('Relatório excluído com sucesso!');
             }
         }
 
