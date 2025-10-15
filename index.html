@@ -16,7 +16,7 @@
     <!-- Firebase Storage -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
     <style>
-        /* Seus estilos CSS permanecem os mesmos */
+        /* Estilos anteriores mantidos */
         :root {
             --primary-color: #4b6cb7;
             --secondary-color: #182848;
@@ -733,6 +733,24 @@
 
         /* ========== ALTERAÇÕES SOLICITADAS ========== */
         
+        /* 1. Dashboard - Fontes brancas em toda a tela */
+        #dashboard-page,
+        #dashboard-page .card,
+        #dashboard-page .card-body,
+        #dashboard-page .card-header,
+        #dashboard-page .table,
+        #dashboard-page .table th,
+        #dashboard-page .table td,
+        #dashboard-page .text-muted,
+        #dashboard-page .expiring-products-list,
+        #dashboard-page .expiring-products-list .text-muted,
+        #dashboard-page .expiring-products-list strong,
+        #dashboard-page .expiring-products-list .small,
+        #dashboard-page .stat-card p,
+        #dashboard-page .stat-card h3 {
+            color: var(--text-light) !important;
+        }
+
         /* 2. Tela: Estoque de Produtos - Fontes brancas para SKU e Tipo de Produto */
         #products-page .report-header strong,
         #products-page .report-header .text-muted,
@@ -828,6 +846,17 @@
         .table-hover tbody tr:hover {
             background-color: var(--table-row-hover);
             color: var(--text-light) !important;
+        }
+
+        /* Footer com créditos */
+        .app-footer {
+            background-color: var(--dark-bg);
+            color: var(--text-muted);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+            font-size: 0.9rem;
         }
 
         /* Responsividade */
@@ -979,26 +1008,52 @@
                 </div>
 
                 <div class="row">
-                    <!-- Movimentações de Paletes da Semana -->
-                    <div class="col-md-12 mb-4">
+                    <!-- Movimentações de Produtos (Semanal) -->
+                    <div class="col-md-6 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Movimentações de Paletes - Semana</h5>
+                                <h5 class="mb-0">Movimentações de Produtos (Semanal)</h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Data</th>
                                                 <th>Tipo</th>
-                                                <th>Movimento</th>
+                                                <th>Tipo de Movimento</th>
                                                 <th>Quantidade</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="weekly-paletes-movements">
+                                        <tbody id="weekly-products-movements">
                                             <tr>
-                                                <td colspan="4" class="text-center">Nenhuma movimentação esta semana</td>
+                                                <td colspan="3" class="text-center">Nenhuma movimentação esta semana</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Movimentações de Produtos (Mensal) -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Movimentações de Produtos (Mensal)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th>Tipo de Movimento</th>
+                                                <th>Quantidade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="monthly-products-movements">
+                                            <tr>
+                                                <td colspan="3" class="text-center">Nenhuma movimentação este mês</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1008,29 +1063,26 @@
                     </div>
                 </div>
 
-                <!-- REMOVIDO: Quadro "Estoque de Produtos por Tipo" conforme solicitado -->
-
-                <div class="row mt-4">
-                    <div class="col-md-8 mb-4">
+                <div class="row">
+                    <!-- Movimentação de Paletes (Semanal) -->
+                    <div class="col-md-6 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Movimentações Recentes de Produtos</h5>
+                                <h5 class="mb-0">Movimentação de Paletes (Semanal)</h5>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Data</th>
-                                                <th>Produto</th>
                                                 <th>Tipo</th>
-                                                <th>Movimento</th>
+                                                <th>Tipo de Movimento</th>
                                                 <th>Quantidade</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="recent-products-movements">
+                                        <tbody id="weekly-paletes-movements">
                                             <tr>
-                                                <td colspan="5" class="text-center">Nenhuma movimentação recente</td>
+                                                <td colspan="3" class="text-center">Nenhuma movimentação esta semana</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1038,6 +1090,35 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Movimentação de Paletes (Mensal) -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Movimentação de Paletes (Mensal)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo de Movimento</th>
+                                                <th>Quantidade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="monthly-paletes-movements">
+                                            <tr>
+                                                <td colspan="2" class="text-center">Nenhuma movimentação este mês</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
                     <div class="col-md-4 mb-4">
                         <div class="card">
                             <div class="card-header">
@@ -1502,28 +1583,37 @@
         </div>
     </div>
 
-    <!-- Modal para Adicionar Produto -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+    <!-- Footer com créditos -->
+    <footer class="app-footer">
+        <div class="container">
+            <p class="mb-1">Sistema desenvolvido por <strong>Aldemir Garbino</strong> com auxílio de IA</p>
+            <p class="mb-0">© 2025 - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <!-- Modal para Adicionar/Editar Produto -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Adicionar Produto ao Estoque</h5>
+                    <h5 class="modal-title" id="productModalTitle">Adicionar Produto ao Estoque</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="add-product-form">
+                    <form id="product-form">
+                        <input type="hidden" id="edit-product-id">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-sku" class="form-label">SKU *</label>
-                                <input type="text" class="form-control" id="new-product-sku" required>
+                                <label for="product-sku" class="form-label">SKU *</label>
+                                <input type="text" class="form-control" id="product-sku" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-name" class="form-label">Produto *</label>
-                                <input type="text" class="form-control" id="new-product-name" required>
+                                <label for="product-name" class="form-label">Produto *</label>
+                                <input type="text" class="form-control" id="product-name" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-type" class="form-label">Tipo de Produto *</label>
-                                <select class="form-select" id="new-product-type" required>
+                                <label for="product-type" class="form-label">Tipo de Produto *</label>
+                                <select class="form-select" id="product-type" required>
                                     <option value="Tambor">Tambor</option>
                                     <option value="Balde">Balde</option>
                                     <option value="Bombona">Bombona</option>
@@ -1532,16 +1622,16 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-quantity" class="form-label">Quantidade *</label>
-                                <input type="number" class="form-control" id="new-product-quantity" min="0" value="0" required>
+                                <label for="product-quantity" class="form-label">Quantidade *</label>
+                                <input type="number" class="form-control" id="product-quantity" min="0" value="0" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-batch" class="form-label">Lote</label>
-                                <input type="text" class="form-control" id="new-product-batch" placeholder="Opcional">
+                                <label for="product-batch" class="form-label">Lote</label>
+                                <input type="text" class="form-control" id="product-batch" placeholder="Opcional">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="new-product-manufacturing-date" class="form-label">Data de Fabricação *</label>
-                                <input type="date" class="form-control" id="new-product-manufacturing-date" required>
+                                <label for="product-manufacturing-date" class="form-label">Data de Fabricação *</label>
+                                <input type="date" class="form-control" id="product-manufacturing-date" required>
                             </div>
                         </div>
                         <p class="text-muted">* Campos obrigatórios</p>
@@ -1549,7 +1639,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="save-new-product">Salvar Produto</button>
+                    <button type="button" class="btn btn-primary" id="save-product">Salvar Produto</button>
                 </div>
             </div>
         </div>
@@ -1694,6 +1784,51 @@
         </div>
     </div>
 
+    <!-- Modal para Editar Movimentação de Paletes -->
+    <div class="modal fade" id="editPaletesModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Movimentação de Paletes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-paletes-form">
+                        <input type="hidden" id="edit-paletes-id">
+                        <div class="mb-3">
+                            <label for="edit-paletes-date" class="form-label">Data</label>
+                            <input type="date" class="form-control" id="edit-paletes-date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-paletes-type" class="form-label">Tipo de Palete</label>
+                            <select class="form-select" id="edit-paletes-type" required>
+                                <option value="Fracionado">Fracionado</option>
+                                <option value="Tambor">Tambor</option>
+                                <option value="IBC 1000L">IBC 1000L</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-paletes-movement" class="form-label">Tipo de Movimento</label>
+                            <select class="form-select" id="edit-paletes-movement" required>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Saída">Saída</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-paletes-quantity" class="form-label">Quantidade</label>
+                            <input type="number" class="form-control" id="edit-paletes-quantity" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-edit-paletes">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ========== CONFIGURAÇÃO DO FIREBASE ==========
@@ -1726,6 +1861,7 @@
         let movementItems = [];
         let uploadedPhotos = [];
         let currentSegregationId = null;
+        let currentEditPaletesId = null;
 
         // ========== NAVEGAÇÃO ENTRE PÁGINAS ==========
         function setupNavigation() {
@@ -1968,7 +2104,7 @@
             
             // Estoque de Produtos
             document.getElementById('add-product')?.addEventListener('click', showAddProductModal);
-            document.getElementById('save-new-product')?.addEventListener('click', addNewProduct);
+            document.getElementById('save-product')?.addEventListener('click', saveProduct);
             document.getElementById('apply-products-filters')?.addEventListener('click', loadProductsData);
             document.getElementById('reset-products-filters')?.addEventListener('click', resetProductsFilters);
             document.getElementById('export-products-excel')?.addEventListener('click', exportProductsExcel);
@@ -1979,6 +2115,7 @@
             document.getElementById('add-paletes-item')?.addEventListener('click', addPaletesItem);
             document.getElementById('generate-paletes-pdf')?.addEventListener('click', generatePaletesPDF);
             document.getElementById('generate-paletes-excel')?.addEventListener('click', generatePaletesExcel);
+            document.getElementById('save-edit-paletes')?.addEventListener('click', saveEditPaletes);
             
             // Produtos Segregados
             document.getElementById('add-segregation')?.addEventListener('click', showAddSegregationModal);
@@ -2034,33 +2171,84 @@
 
         function updateRecentMovements() {
             const movementHistory = JSON.parse(localStorage.getItem('movementHistory') || '[]');
-            const recentMovements = movementHistory.slice(-5).reverse();
-            const tbody = document.getElementById('recent-products-movements');
             
-            tbody.innerHTML = '';
+            // Movimentações de produtos (Semanal)
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const weeklyMovements = movementHistory.filter(m => new Date(m.date) >= weekAgo);
+            const weeklyTbody = document.getElementById('weekly-products-movements');
             
-            if (recentMovements.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhuma movimentação recente</td></tr>';
-                return;
+            weeklyTbody.innerHTML = '';
+            
+            if (weeklyMovements.length === 0) {
+                weeklyTbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma movimentação esta semana</td></tr>';
+            } else {
+                // Agrupar por tipo e movimento
+                const groupedData = {};
+                weeklyMovements.forEach(movement => {
+                    const key = `${movement.productType}-${movement.movementType}`;
+                    if (!groupedData[key]) {
+                        groupedData[key] = {
+                            type: movement.productType,
+                            movement: movement.movementType,
+                            quantity: 0
+                        };
+                    }
+                    groupedData[key].quantity += movement.quantity;
+                });
+                
+                Object.values(groupedData).forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.type}</td>
+                        <td>${item.movement}</td>
+                        <td>${item.quantity}</td>
+                    `;
+                    weeklyTbody.appendChild(row);
+                });
             }
             
-            recentMovements.forEach(movement => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${formatDate(movement.date)}</td>
-                    <td>${movement.productName}</td>
-                    <td>${movement.productType}</td>
-                    <td>${movement.movementType}</td>
-                    <td>${movement.quantity}</td>
-                `;
-                tbody.appendChild(row);
-            });
+            // Movimentações de produtos (Mensal)
+            const monthAgo = new Date();
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            const monthlyMovements = movementHistory.filter(m => new Date(m.date) >= monthAgo);
+            const monthlyTbody = document.getElementById('monthly-products-movements');
+            
+            monthlyTbody.innerHTML = '';
+            
+            if (monthlyMovements.length === 0) {
+                monthlyTbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma movimentação este mês</td></tr>';
+            } else {
+                // Agrupar por tipo e movimento
+                const groupedData = {};
+                monthlyMovements.forEach(movement => {
+                    const key = `${movement.productType}-${movement.movementType}`;
+                    if (!groupedData[key]) {
+                        groupedData[key] = {
+                            type: movement.productType,
+                            movement: movement.movementType,
+                            quantity: 0
+                        };
+                    }
+                    groupedData[key].quantity += movement.quantity;
+                });
+                
+                Object.values(groupedData).forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.type}</td>
+                        <td>${item.movement}</td>
+                        <td>${item.quantity}</td>
+                    `;
+                    monthlyTbody.appendChild(row);
+                });
+            }
         }
 
         function updatePaletesMovements() {
             const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
             
-            // Movimentações da semana
+            // Movimentações de paletes (Semanal)
             const weekAgo = new Date();
             weekAgo.setDate(weekAgo.getDate() - 7);
             const weeklyPaletes = paletesData.filter(p => new Date(p.date) >= weekAgo);
@@ -2068,41 +2256,99 @@
             
             weeklyTbody.innerHTML = '';
             
-            if (weeklyPaletes.length > 0) {
+            if (weeklyPaletes.length === 0) {
+                weeklyTbody.innerHTML = '<tr><td colspan="3" class="text-center">Nenhuma movimentação esta semana</td></tr>';
+            } else {
+                // Agrupar por tipo e movimento
+                const groupedData = {};
                 weeklyPaletes.forEach(report => {
                     report.items.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${formatDate(report.date)}</td>
-                            <td>${item.type}</td>
-                            <td>${item.movement}</td>
-                            <td>${item.quantity}</td>
-                        `;
-                        weeklyTbody.appendChild(row);
+                        const key = `${item.type}-${item.movement}`;
+                        if (!groupedData[key]) {
+                            groupedData[key] = {
+                                type: item.type,
+                                movement: item.movement,
+                                quantity: 0
+                            };
+                        }
+                        groupedData[key].quantity += item.quantity;
                     });
                 });
+                
+                Object.values(groupedData).forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.type}</td>
+                        <td>${item.movement}</td>
+                        <td>${item.quantity}</td>
+                    `;
+                    weeklyTbody.appendChild(row);
+                });
+            }
+            
+            // Movimentações de paletes (Mensal)
+            const monthAgo = new Date();
+            monthAgo.setMonth(monthAgo.getMonth() - 1);
+            const monthlyPaletes = paletesData.filter(p => new Date(p.date) >= monthAgo);
+            const monthlyTbody = document.getElementById('monthly-paletes-movements');
+            
+            monthlyTbody.innerHTML = '';
+            
+            if (monthlyPaletes.length === 0) {
+                monthlyTbody.innerHTML = '<tr><td colspan="2" class="text-center">Nenhuma movimentação este mês</td></tr>';
             } else {
-                weeklyTbody.innerHTML = '<tr><td colspan="4" class="text-center">Nenhuma movimentação esta semana</td></tr>';
+                // Agrupar por movimento
+                const groupedData = {};
+                monthlyPaletes.forEach(report => {
+                    report.items.forEach(item => {
+                        if (!groupedData[item.movement]) {
+                            groupedData[item.movement] = {
+                                movement: item.movement,
+                                quantity: 0
+                            };
+                        }
+                        groupedData[item.movement].quantity += item.quantity;
+                    });
+                });
+                
+                Object.values(groupedData).forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.movement}</td>
+                        <td>${item.quantity}</td>
+                    `;
+                    monthlyTbody.appendChild(row);
+                });
             }
         }
 
         function updateProductStatus() {
             const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
             
-            // Contar produtos por status (simulação)
-            const validCount = productsData.filter(p => p.Quantidade > 20).length;
-            const warningCount = productsData.filter(p => p.Quantidade <= 20 && p.Quantidade > 5).length;
-            const expiredCount = productsData.filter(p => p.Quantidade <= 5).length;
+            // Contar produtos por status
+            let validCount = 0;
+            let warningCount = 0;
+            let expiredCount = 0;
+            
+            productsData.forEach(product => {
+                const status = getProductStatus(product['Data Fabricação']);
+                if (status === 'Dentro do Prazo') validCount++;
+                else if (status === 'Vencimento Próximo') warningCount++;
+                else if (status === 'Vencido') expiredCount++;
+            });
             
             document.getElementById('count-valid').textContent = validCount;
             document.getElementById('count-warning').textContent = warningCount;
             document.getElementById('count-expired').textContent = expiredCount;
             
-            // Produtos com vencimento próximo (simulação)
+            // Produtos com vencimento próximo
             const expiringList = document.getElementById('expiring-products-list');
             expiringList.innerHTML = '';
             
-            const expiringProducts = productsData.filter(p => p.Quantidade <= 10).slice(0, 5);
+            const expiringProducts = productsData.filter(p => {
+                const status = getProductStatus(p['Data Fabricação']);
+                return status === 'Vencimento Próximo' || status === 'Vencido';
+            }).slice(0, 5);
             
             if (expiringProducts.length === 0) {
                 expiringList.innerHTML = '<div class="text-center p-3 text-muted">Nenhum produto com vencimento próximo</div>';
@@ -2110,6 +2356,9 @@
             }
             
             expiringProducts.forEach(product => {
+                const status = getProductStatus(product['Data Fabricação']);
+                const statusClass = status === 'Vencido' ? 'status-expired' : 'status-warning';
+                
                 const item = document.createElement('div');
                 item.className = 'p-3 border-bottom border-secondary';
                 item.innerHTML = `
@@ -2118,7 +2367,7 @@
                             <strong>${product.Produto}</strong>
                             <div class="text-muted small">${product.SKU} - ${product.Lote}</div>
                         </div>
-                        <span class="badge bg-warning">${product.Quantidade} unidades</span>
+                        <span class="${statusClass}">${status}</span>
                     </div>
                 `;
                 expiringList.appendChild(item);
@@ -2799,6 +3048,9 @@
                                 <button class="btn btn-sm btn-success me-1 add-batch-btn" data-sku="${product.SKU}">
                                     <i class="bi bi-plus-circle"></i> Novo Lote
                                 </button>
+                                <button class="btn btn-sm btn-warning me-1 edit-product-btn" data-sku="${product.SKU}">
+                                    <i class="bi bi-pencil"></i> Editar Produto
+                                </button>
                                 <i class="bi bi-chevron-down"></i>
                             </div>
                         </div>
@@ -2811,15 +3063,24 @@
                                         <th>Lote</th>
                                         <th>Quantidade</th>
                                         <th>Data Fabricação</th>
+                                        <th>Data Vencimento</th>
+                                        <th>Status</th>
                                         <th class="text-center">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${product.Lotes.map(lote => `
+                                    ${product.Lotes.map(lote => {
+                                        const status = getProductStatus(lote.fabricacao);
+                                        const statusClass = status === 'Vencido' ? 'status-expired' : 
+                                                           status === 'Vencimento Próximo' ? 'status-warning' : 'status-valid';
+                                        const expiryDate = getExpiryDate(lote.fabricacao);
+                                        return `
                                         <tr>
                                             <td>${lote.lote}</td>
                                             <td>${lote.quantidade}</td>
                                             <td>${formatDate(lote.fabricacao)}</td>
+                                            <td>${formatDate(expiryDate)}</td>
+                                            <td><span class="${statusClass}">${status}</span></td>
                                             <td class="text-center">
                                                 <button class="btn btn-sm btn-warning me-1 edit-batch" data-id="${lote.id}">
                                                     <i class="bi bi-pencil"></i>
@@ -2829,7 +3090,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                    `).join('')}
+                                    `}).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -2843,8 +3104,8 @@
                 const icon = productElement.querySelector('.bi-chevron-down');
                 
                 header.addEventListener('click', (e) => {
-                    // Não expandir/recolher se clicar no botão de adicionar lote
-                    if (!e.target.closest('.add-batch-btn')) {
+                    // Não expandir/recolher se clicar nos botões de ação
+                    if (!e.target.closest('.add-batch-btn') && !e.target.closest('.edit-product-btn')) {
                         const isVisible = details.style.display !== 'none';
                         details.style.display = isVisible ? 'none' : 'block';
                         icon.className = isVisible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
@@ -2856,6 +3117,13 @@
                 addBatchBtn.addEventListener('click', function() {
                     const sku = this.getAttribute('data-sku');
                     showAddBatchModal(sku);
+                });
+                
+                // Adicionar evento para o botão de editar produto
+                const editProductBtn = productElement.querySelector('.edit-product-btn');
+                editProductBtn.addEventListener('click', function() {
+                    const sku = this.getAttribute('data-sku');
+                    editProduct(sku);
                 });
                 
                 // Adicionar eventos para editar e excluir lotes
@@ -2873,6 +3141,114 @@
                     });
                 });
             });
+        }
+
+        // NOVA FUNÇÃO: Determinar status do produto com base na data de fabricação
+        function getProductStatus(manufacturingDate) {
+            const today = new Date();
+            const manufacturing = new Date(manufacturingDate);
+            const expiryDate = new Date(manufacturing);
+            expiryDate.setFullYear(expiryDate.getFullYear() + 4); // Validade de 4 anos
+            
+            const warningDate = new Date(expiryDate);
+            warningDate.setFullYear(warningDate.getFullYear() - 1); // Aviso 1 ano antes
+            
+            if (today > expiryDate) {
+                return 'Vencido';
+            } else if (today > warningDate) {
+                return 'Vencimento Próximo';
+            } else {
+                return 'Dentro do Prazo';
+            }
+        }
+
+        // NOVA FUNÇÃO: Calcular data de vencimento
+        function getExpiryDate(manufacturingDate) {
+            const manufacturing = new Date(manufacturingDate);
+            const expiryDate = new Date(manufacturing);
+            expiryDate.setFullYear(expiryDate.getFullYear() + 4);
+            return expiryDate.toISOString().split('T')[0];
+        }
+
+        function showAddProductModal() {
+            document.getElementById('productModalTitle').textContent = 'Adicionar Produto ao Estoque';
+            document.getElementById('product-form').reset();
+            document.getElementById('edit-product-id').value = '';
+            document.getElementById('product-manufacturing-date').value = new Date().toISOString().split('T')[0];
+            new bootstrap.Modal(document.getElementById('productModal')).show();
+        }
+
+        function editProduct(sku) {
+            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+            const product = productsData.find(p => p.SKU === sku);
+            
+            if (product) {
+                document.getElementById('productModalTitle').textContent = 'Editar Produto';
+                document.getElementById('edit-product-id').value = product.id;
+                document.getElementById('product-sku').value = product.SKU;
+                document.getElementById('product-name').value = product.Produto;
+                document.getElementById('product-type').value = product.Tipo;
+                document.getElementById('product-quantity').value = product.Quantidade;
+                document.getElementById('product-batch').value = product.Lote;
+                document.getElementById('product-manufacturing-date').value = product['Data Fabricação'];
+                
+                new bootstrap.Modal(document.getElementById('productModal')).show();
+            }
+        }
+
+        function saveProduct() {
+            const id = document.getElementById('edit-product-id').value;
+            const sku = document.getElementById('product-sku').value;
+            const name = document.getElementById('product-name').value;
+            const type = document.getElementById('product-type').value;
+            const quantity = document.getElementById('product-quantity').value;
+            const batch = document.getElementById('product-batch').value;
+            const manufacturingDate = document.getElementById('product-manufacturing-date').value;
+            
+            if (!sku || !name || !type || !quantity || !manufacturingDate) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+            
+            // Salvar produto
+            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+            
+            if (id) {
+                // Editar produto existente
+                const productIndex = productsData.findIndex(p => p.id == id);
+                if (productIndex !== -1) {
+                    productsData[productIndex].SKU = sku;
+                    productsData[productIndex].Produto = name;
+                    productsData[productIndex].Tipo = type;
+                    productsData[productIndex].Quantidade = parseInt(quantity);
+                    productsData[productIndex].Lote = batch || `LOTE-${Date.now()}`;
+                    productsData[productIndex]['Data Fabricação'] = manufacturingDate;
+                }
+            } else {
+                // Adicionar novo produto
+                const newId = productsData.length > 0 ? Math.max(...productsData.map(p => p.id)) + 1 : 1;
+                
+                const newProduct = {
+                    SKU: sku,
+                    Produto: name,
+                    Tipo: type,
+                    Quantidade: parseInt(quantity),
+                    Lote: batch || `LOTE-${Date.now()}`,
+                    'Data Fabricação': manufacturingDate,
+                    Entradas: parseInt(quantity),
+                    Saídas: 0,
+                    id: newId
+                };
+                
+                productsData.push(newProduct);
+            }
+            
+            localStorage.setItem('productsData', JSON.stringify(productsData));
+            
+            alert(id ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!');
+            bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+            loadProductsData();
+            updateDashboard();
         }
 
         function showAddBatchModal(sku) {
@@ -2924,7 +3300,21 @@
         }
 
         function editBatch(id) {
-            alert(`Editar lote ${id} - Funcionalidade em desenvolvimento`);
+            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
+            const product = productsData.find(p => p.id === id);
+            
+            if (product) {
+                document.getElementById('productModalTitle').textContent = 'Editar Lote';
+                document.getElementById('edit-product-id').value = product.id;
+                document.getElementById('product-sku').value = product.SKU;
+                document.getElementById('product-name').value = product.Produto;
+                document.getElementById('product-type').value = product.Tipo;
+                document.getElementById('product-quantity').value = product.Quantidade;
+                document.getElementById('product-batch').value = product.Lote;
+                document.getElementById('product-manufacturing-date').value = product['Data Fabricação'];
+                
+                new bootstrap.Modal(document.getElementById('productModal')).show();
+            }
         }
 
         function deleteBatch(id) {
@@ -2945,69 +3335,26 @@
             loadProductsData();
         }
 
-        function showAddProductModal() {
-            // Limpar formulário
-            document.getElementById('add-product-form').reset();
-            // Definir data atual
-            document.getElementById('new-product-manufacturing-date').value = new Date().toISOString().split('T')[0];
-            // Mostrar modal
-            new bootstrap.Modal(document.getElementById('addProductModal')).show();
-        }
-
-        function addNewProduct() {
-            const sku = document.getElementById('new-product-sku').value;
-            const name = document.getElementById('new-product-name').value;
-            const type = document.getElementById('new-product-type').value;
-            const quantity = document.getElementById('new-product-quantity').value;
-            const batch = document.getElementById('new-product-batch').value;
-            const manufacturingDate = document.getElementById('new-product-manufacturing-date').value;
-            
-            if (!sku || !name || !type || !quantity || !manufacturingDate) {
-                alert('Preencha todos os campos obrigatórios!');
-                return;
-            }
-            
-            // Salvar produto
-            const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
-            const newId = productsData.length > 0 ? Math.max(...productsData.map(p => p.id)) + 1 : 1;
-            
-            const newProduct = {
-                SKU: sku,
-                Produto: name,
-                Tipo: type,
-                Quantidade: parseInt(quantity),
-                Lote: batch || `LOTE-${Date.now()}`,
-                'Data Fabricação': manufacturingDate,
-                Entradas: parseInt(quantity),
-                Saídas: 0,
-                id: newId
-            };
-            
-            productsData.push(newProduct);
-            localStorage.setItem('productsData', JSON.stringify(productsData));
-            
-            alert('Produto adicionado com sucesso!');
-            bootstrap.Modal.getInstance(document.getElementById('addProductModal')).hide();
-            loadProductsData();
-            updateDashboard();
-        }
-
         function exportProductsExcel() {
             // Criar workbook
             const wb = XLSX.utils.book_new();
             
             // Obter dados
             const productsData = JSON.parse(localStorage.getItem('productsData') || '[]');
-            const data = [['SKU', 'Produto', 'Tipo', 'Quantidade', 'Lote', 'Data Fabricação']];
+            const data = [['SKU', 'Produto', 'Tipo', 'Quantidade', 'Lote', 'Data Fabricação', 'Data Vencimento', 'Status']];
             
             productsData.forEach(product => {
+                const status = getProductStatus(product['Data Fabricação']);
+                const expiryDate = getExpiryDate(product['Data Fabricação']);
                 data.push([
                     product.SKU,
                     product.Produto,
                     product.Tipo,
                     product.Quantidade,
                     product.Lote,
-                    formatDate(product['Data Fabricação'])
+                    formatDate(product['Data Fabricação']),
+                    formatDate(expiryDate),
+                    status
                 ]);
             });
             
@@ -3046,7 +3393,15 @@
                 reportElement.innerHTML = `
                     <div class="report-header">
                         <span>Relatório #${report.reportNumber} - ${formatDate(report.date)}</span>
-                        <i class="bi bi-chevron-down"></i>
+                        <div>
+                            <button class="btn btn-sm btn-warning me-1 edit-report" data-id="${report.id}">
+                                <i class="bi bi-pencil"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-danger me-1 delete-report" data-id="${report.id}">
+                                <i class="bi bi-trash"></i> Excluir
+                            </button>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
                     </div>
                     <div class="report-details" style="display: none;">
                         ${report.items.map(item => `
@@ -3065,12 +3420,93 @@
                 const details = reportElement.querySelector('.report-details');
                 const icon = reportElement.querySelector('.bi-chevron-down');
                 
-                header.addEventListener('click', () => {
-                    const isVisible = details.style.display !== 'none';
-                    details.style.display = isVisible ? 'none' : 'block';
-                    icon.className = isVisible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+                header.addEventListener('click', (e) => {
+                    // Não expandir/recolher se clicar nos botões de ação
+                    if (!e.target.closest('.edit-report') && !e.target.closest('.delete-report')) {
+                        const isVisible = details.style.display !== 'none';
+                        details.style.display = isVisible ? 'none' : 'block';
+                        icon.className = isVisible ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+                    }
+                });
+                
+                // Adicionar evento para o botão de editar
+                const editBtn = reportElement.querySelector('.edit-report');
+                editBtn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    editPaletesReport(id);
+                });
+                
+                // Adicionar evento para o botão de excluir
+                const deleteBtn = reportElement.querySelector('.delete-report');
+                deleteBtn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    deletePaletesReport(id);
                 });
             });
+        }
+
+        function editPaletesReport(id) {
+            const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
+            const report = paletesData.find(r => r.id === id);
+            
+            if (report) {
+                currentEditPaletesId = id;
+                document.getElementById('edit-paletes-id').value = id;
+                document.getElementById('edit-paletes-date').value = report.date;
+                
+                // Preencher com o primeiro item (simplificação)
+                if (report.items.length > 0) {
+                    const item = report.items[0];
+                    document.getElementById('edit-paletes-type').value = item.type;
+                    document.getElementById('edit-paletes-movement').value = item.movement;
+                    document.getElementById('edit-paletes-quantity').value = item.quantity;
+                }
+                
+                new bootstrap.Modal(document.getElementById('editPaletesModal')).show();
+            }
+        }
+
+        function saveEditPaletes() {
+            const id = document.getElementById('edit-paletes-id').value;
+            const date = document.getElementById('edit-paletes-date').value;
+            const type = document.getElementById('edit-paletes-type').value;
+            const movement = document.getElementById('edit-paletes-movement').value;
+            const quantity = document.getElementById('edit-paletes-quantity').value;
+            
+            if (!date || !type || !movement || !quantity) {
+                alert('Preencha todos os campos!');
+                return;
+            }
+            
+            const paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
+            const reportIndex = paletesData.findIndex(r => r.id == id);
+            
+            if (reportIndex !== -1) {
+                // Atualizar relatório (simplificação - atualiza apenas o primeiro item)
+                paletesData[reportIndex].date = date;
+                if (paletesData[reportIndex].items.length > 0) {
+                    paletesData[reportIndex].items[0].type = type;
+                    paletesData[reportIndex].items[0].movement = movement;
+                    paletesData[reportIndex].items[0].quantity = parseInt(quantity);
+                }
+                
+                localStorage.setItem('paletesData', JSON.stringify(paletesData));
+                alert('Movimentação de paletes atualizada com sucesso!');
+                bootstrap.Modal.getInstance(document.getElementById('editPaletesModal')).hide();
+                loadPaletesData();
+                updateDashboard();
+            }
+        }
+
+        function deletePaletesReport(id) {
+            if (confirm('Tem certeza que deseja excluir este relatório?')) {
+                let paletesData = JSON.parse(localStorage.getItem('paletesData') || '[]');
+                paletesData = paletesData.filter(r => r.id !== id);
+                localStorage.setItem('paletesData', JSON.stringify(paletesData));
+                loadPaletesData();
+                updateDashboard();
+                alert('Relatório excluído com sucesso!');
+            }
         }
 
         function resetPaletesFilters() {
